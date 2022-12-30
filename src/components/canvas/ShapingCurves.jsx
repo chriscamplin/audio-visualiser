@@ -186,10 +186,11 @@ const ShapingCurves = () => {
   )
 
   useEffect(() => void setMaterial(matRef.current))
-  const baubleMaterial = new THREE.MeshStandardMaterial({
+  const baubleMaterial = new THREE.MeshPhysicalMaterial({
     color: palettes[paletteIdx],
     roughness: 0,
-    opacity: 0.5,
+    thickness: 0.25,
+    transmission: 1,
     envMapIntensity: 0.2,
     emissive: '#370037',
     side: THREE.BackSide,
@@ -227,6 +228,25 @@ const ShapingCurves = () => {
         rotation={[-Math.PI / 2, 0, 0]}
         position={[0, -0.025, 0]}
         // scale={[4, 4, 4]}
+        // visible={false}
+        onClick={() => {
+          console.log({ drawCalls: gl.info.render })
+          setPaletteIdx(Math.round(Math.random() * palettes.length))
+        }}
+        material={baubleMaterial}
+      >
+        <sphereGeometry />
+        <Environment files='/adamsbridge.hdr' />
+
+        {/* <shadowMaterial transparent opacity={0.15} /> */}
+        {/* <meshBasicMaterial /> */}
+      </mesh>
+      <mesh
+        lights={true}
+        receiveShadow
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, -0.025, 0]}
+        scale={[1.5, 1.5, 1.5]}
         // visible={false}
         onClick={() => {
           console.log({ drawCalls: gl.info.render })
