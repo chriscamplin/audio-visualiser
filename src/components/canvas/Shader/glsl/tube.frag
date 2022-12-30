@@ -9,14 +9,14 @@ uniform vec3 color;
 uniform float animateRadius;
 uniform float animateStrength;
 
-#pragma glslify: faceNormal = require('glsl-face-normal');
+// #pragma glslify: faceNormal = require('glsl-face-normal');
 
 void main () {
   // handle flat and smooth normals
   vec3 normal = vNormal;
-  #ifdef FLAT_SHADED
-    normal = faceNormal(vViewPosition);
-  #endif
+  // #ifdef FLAT_SHADED
+  //   normal = faceNormal(vViewPosition);
+  // #endif
 
   // Z-normal "fake" shading
   float diffuse = normal.z * 0.5 + 0.5;

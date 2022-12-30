@@ -1,6 +1,6 @@
 const SEED = String(require('./query').seed || '2')
 const seedRandom = require('seed-random')
-const SimplexNoise = require('simplex-noise')
+// const SimplexNoise = require('simplex-noise')
 
 export const random = seedRandom(SEED)
 

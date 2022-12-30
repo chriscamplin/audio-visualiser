@@ -15,6 +15,9 @@ uniform float animateRadius;
 uniform float animateStrength;
 uniform float index;
 uniform float radialSegments;
+uniform float uOffset;
+uniform float uXOffset;
+uniform float uYOffset;
 
 // pass a few things along to the vertex shader
 out vec2 vUv;
@@ -34,8 +37,8 @@ out vec3 vNormal;
 // Angles to spherical coordinates
 vec3 spherical (float r, float phi, float theta) {
   return r * vec3(
-    cos(phi) * cos(theta),
-    cos(phi) * sin(theta),
+    cos(phi) * cos(theta)*uXOffset,
+    cos(phi) * sin(theta)*uYOffset,
     sin(phi)
   );
 }
@@ -48,7 +51,7 @@ vec3 spherical (float r, float phi, float theta) {
 // }
 
 // Creates an animated torus knot
-vec3 testSample (float t) {
+vec3 tKnotSample (float t) {
   float beta = t * PI;
   
   float ripple = ease(sin(t * 2.0 * PI + time) * 0.5 + 0.5) * 0.5;
@@ -86,8 +89,8 @@ void createTube (float t, vec2 volume, out vec3 outPosition, out vec3 outNormal)
   float nextT = t + (1.0 / lengthSegments);
 
   // find first tangent
-  vec3 point0 = testSample(0.0);
-  vec3 point1 = testSample(1.0 / lengthSegments);
+  vec3 point0 = tKnotSample(0.0);
+  vec3 point1 = tKnotSample(100.0 / lengthSegments);
 
   vec3 lastTangent = getTangent(point0, point1);
   vec3 absTangent = abs(lastTangent);
@@ -120,10 +123,10 @@ void createTube (float t, vec2 volume, out vec3 outPosition, out vec3 outNormal)
   float maxLen = (lengthSegments - 1.0);
   float epSq = EPSILON * EPSILON;
   for (float i = 1.0; i < lengthSegments; i += 1.0) {
-    float u = i / maxLen;
+    float u = i / maxLen*10.;
     // could avoid additional sample here at expense of ternary
     // point = i == 1.0 ? point1 : sample(u);
-    point = testSample(u);
+    point = tKnotSample(u);
     tangent = getTangent(lastPoint, point);
     normal = lastNormal;
     binormal = lastBinormal;
@@ -156,7 +159,7 @@ void createTube (float t, vec2 volume, out vec3 outPosition, out vec3 outNormal)
   vec3 N = -normal;
 
   // extrude the path & create a new normal
-  outNormal.xyz = normalize(B * circX + N * circY);
+  outNormal.xyz = normalize(B * circX + N * circY.);
   outPosition.xyz = point + B * volume.x * circX + N * volume.y * circY;
 }
 #else
@@ -168,8 +171,8 @@ void createTube (float t, vec2 volume, out vec3 offset, out vec3 normal) {
   float nextT = t + (1.0 / lengthSegments);
 
   // sample the curve in two places
-  vec3 current = testSample(t);
-  vec3 next = testSample(nextT);
+  vec3 current = tKnotSample(t);
+  vec3 next = tKnotSample(nextT);
   
   // compute the TBN matrix
   vec3 T = normalize(next - current);
@@ -183,14 +186,14 @@ void createTube (float t, vec2 volume, out vec3 offset, out vec3 normal) {
 
   // compute position and normal
   normal.xyz = normalize(B * circX + N * circY);
-  offset.xyz = current + B * volume.x * circX + N * volume.y * circY;
+  offset.xyz = current + B * volume.x * circX + N * volume.y;
 }
 #endif
 
 void main() {
   // current position to sample at
   // [-0.5 .. 0.5] to [0.0 .. 1.0]
-  float t = (position* 2.0) * 0.5 + 0.5;
+  float t = (position * uOffset) * 0.5 + 0.5;
 
   // build our tube geometry
   vec2 volume = vec2(thickness);
@@ -198,7 +201,7 @@ void main() {
   // animate the per-vertex curve thickness
   float volumeAngle = t * lengthSegments * 0.5 + index * 20.0 + time * 2.5;
   float volumeMod = sin(volumeAngle) * 0.5 + 0.5;
-  volume += 0.0001 * volumeMod;
+  volume += 0.01 * volumeMod;
 
   // build our geometry
   vec3 transformed;

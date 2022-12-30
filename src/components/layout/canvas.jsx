@@ -49,6 +49,7 @@ const LCanvas = ({ children }) => {
           alpha: false,
           sortObjects: false,
         }}
+        dpr={1}
         camera={{ position: [-1, 1.5, 2], fov: 65 }}
       >
         <Stats />

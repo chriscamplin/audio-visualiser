@@ -28,6 +28,7 @@
     "glsl-face-normal": "^1.0.2",
     "glsl-pi": "^1.0.0",
     "glsl-random": "^0.0.5",
+    "leva": "^0.9.34",
     "next": "^12.1.6",
     "next-compose-plugins": "^2.2.1",
     "query-string": "^7.1.3",

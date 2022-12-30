@@ -17,7 +17,7 @@ const AudioViz = dynamic(() => import('@/components/canvas/AudioViz'), {
 const Page = (props) => {
   return (
     <>
-      <div>AUDIO VISUALISER</div>
+      <div style={{ color: '#fff', textAlign: 'center' }}>AUDIO VISUALISER</div>
     </>
   )
 }
@@ -26,11 +26,12 @@ const Page = (props) => {
 // It will receive same props as Page component (from getStaticProps, etc.)
 Page.r3f = (props) => {
   return (
-  <>
-    <AudioViz />
-    <Shader />
-  </>
-)}
+    <>
+      <AudioViz />
+      <Shader />
+    </>
+  )
+}
 
 export default Page
 

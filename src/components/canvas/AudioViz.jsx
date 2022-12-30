@@ -1,4 +1,6 @@
-import { Suspense, useEffect, useRef } from 'react'
+import * as THREE from 'three'
+
+import { Suspense, useRef, useState } from 'react'
 import { Track, Zoom } from '@/components/canvas/track'
 
 import ShapingCurves from '@/components/canvas/ShapingCurves'
@@ -9,7 +11,21 @@ const AudioViz = () => {
 
   return viewAudioViz ? (
     <>
-      {/* <spotLight position={[-4, 4, -4]} angle={0.06} penumbra={1} castShadow shadow-mapSize={[2048, 2048]} /> */}
+      <ambientLight intensity={0.25} />
+      <spotLight
+        intensity={1}
+        angle={0.2}
+        penumbra={1}
+        position={[30, 30, 30]}
+        castShadow
+        shadow-mapSize={[512, 512]}
+      />
+      <directionalLight
+        intensity={5}
+        position={[-10, -10, -10]}
+        color='purple'
+      />
+
       <Suspense fallback={null}>
         {/* <Track position-z={-0.25} url="/synth.mp3" />
         <Track position-z={0} url="/snare.mp3" />
@@ -17,19 +33,6 @@ const AudioViz = () => {
         <Zoom url="/drum.mp3" /> */}
         <ShapingCurves />
       </Suspense>
-      {/* <mesh
-        receiveShadow
-        rotation={[-Math.PI / 2, 0, 0]}
-        position={[0, -0.025, 0]}
-        onClick={() => {
-          useStore.setState({
-            viewAudioViz: false,
-          })
-        }}
-      >
-        <planeGeometry />
-        <shadowMaterial transparent opacity={0.15} />
-      </mesh> */}
     </>
   ) : null
 }
