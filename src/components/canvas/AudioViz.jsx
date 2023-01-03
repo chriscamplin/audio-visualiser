@@ -1,14 +1,14 @@
-import * as THREE from 'three'
-
-import { EffectComposer, SSAO } from '@react-three/postprocessing'
-import { Suspense, useRef, useState } from 'react'
-import { Track, Zoom } from '@/components/canvas/track'
-
-import { Environment } from '@react-three/drei'
+// import * as THREE from 'three'
 import ProceduralBackground from '@/components/canvas/ProceduralBackground'
+import { Suspense } from 'react'
+// import { Environment } from '@react-three/drei'
 import dynamic from 'next/dynamic'
+// import { Track, Zoom } from '@/components/canvas/track'
 // import ShapingCurves from '@/components/canvas/ShapingCurves'
 import useStore from '@/helpers/store/'
+
+// import ShapingCurves from '@/components/canvas/ShapingCurves'
+
 
 const ShapingCurves = dynamic(
   () => import('@/components/canvas/ShapingCurves'),
@@ -16,12 +16,12 @@ const ShapingCurves = dynamic(
     ssr: false,
   }
 )
-const BubbleEmitter = dynamic(
-  () => import('@/components/canvas/BubbleEmitter'),
-  {
-    ssr: false,
-  }
-)
+// const BubbleEmitter = dynamic(
+//   () => import('@/components/canvas/BubbleEmitter'),
+//   {
+//     ssr: false,
+//   }
+// )
 const MarbleWrapper = dynamic(
   () => import('@/components/canvas/MarbleWrapper'),
   {
@@ -29,16 +29,14 @@ const MarbleWrapper = dynamic(
   }
 )
 
-const Dots = dynamic(() => import('@/components/canvas/Dots'), {
-  ssr: false,
-})
-const Cube = dynamic(() => import('@/components/canvas/Cube'), {
-  ssr: false,
-})
-const Audio = dynamic(() => import('@/components/canvas/Audio'), {
-  ssr: false,
-})
-const step = 10
+// const Dots = dynamic(() => import('@/components/canvas/Dots'), {
+//   ssr: false,
+// })
+// const Audio = dynamic(() => import('@/components/canvas/Audio'), {
+//   ssr: false,
+// })
+
+// const step = 10
 
 const AudioViz = () => {
   const viewAudioViz = useStore((state) => state.viewAudioViz)

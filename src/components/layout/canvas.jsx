@@ -1,14 +1,8 @@
-import {
-  OrbitControls,
-  PerformanceMonitor,
-  Preload,
-  Stats,
-} from '@react-three/drei'
-// import { Recorder, useCapture } from '@/lib/useCapture'
-import { StrictMode, useEffect, useRef, useState } from 'react'
+import { OrbitControls, PerformanceMonitor, Stats } from '@react-three/drei'
+import { StrictMode, useEffect, useRef } from 'react'
 
 import { Canvas } from '@react-three/fiber'
-import { useControls } from 'leva'
+import RecordCanvas from '@/components/dom/RecordCanvas'
 import useStore from '@/helpers/store'
 
 const LControl = () => {
@@ -26,7 +20,6 @@ const LControl = () => {
       }
     }
   }, [dom, control])
-  // @ts-ignore
   return <OrbitControls ref={control} domElement={dom.current} />
 }
 
@@ -35,14 +28,12 @@ const LCanvas = ({ children }) => {
   // const { startRecording, isRecording } = useCapture()
 
   const dom = useStore((state) => state.dom)
+
   return (
     <StrictMode>
-      {/* <button className='recording' onClick={startRecording}>
-        {isRecording ? 'Recording...' : 'Start Recording'}
-      </button> */}
-
+      <RecordCanvas canvRef={canvasRef} />
       <Canvas
-        orthographic
+        // orthographic
         ref={canvasRef}
         style={{
           position: 'absolute',
@@ -69,12 +60,6 @@ const LCanvas = ({ children }) => {
         <LControl />
         {/* <Preload all /> */}
         {children}
-        {/* <Recorder
-          duration={8}
-          framerate={60}
-          motionBlurFrames={1}
-          filename={'my-recording'}
-        /> */}
       </Canvas>
     </StrictMode>
   )
