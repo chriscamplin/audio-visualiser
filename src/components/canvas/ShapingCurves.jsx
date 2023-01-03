@@ -4,15 +4,16 @@ import { extend, useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 
 import { Environment } from '@react-three/drei'
+import createAudio from '@/helpers/createAudio'
 import createTubeGeometry from '@/components/canvas/createTubeGeometry'
 import fragment from '@/components/canvas/Shader/glsl/tube.frag'
 import { randomFloat } from '@/lib/random'
+import { suspend } from 'suspend-react'
 import { useControls } from 'leva'
-// import { shaderMaterial } from '@react-three/drei'
 // import useStore from '@/helpers/store'
 import vertex from '@/components/canvas/Shader/glsl/tube.vert'
 
-const totalMeshes = 20
+const totalMeshes = 40
 const numSides = 8
 const subdivisions = 300
 const isSquare = false
@@ -71,6 +72,7 @@ class CurveMaterial extends THREE.RawShaderMaterial {
         uOffset: { value: 0 },
         uXOffset: { value: 0 },
         uYOffset: { value: 0 },
+        thetaFactor: { value: 4.0 },
       },
       vertexShader: vertex,
       fragmentShader: fragment,
@@ -79,12 +81,14 @@ class CurveMaterial extends THREE.RawShaderMaterial {
 }
 
 extend({ CurveMaterial })
+const tubeGeom = createTubeGeometry(numSides, subdivisions)
 
-const CurveMesh = ({ tubeData, index, material, color }) => {
+const CurveMesh = ({ index, material, color, url }) => {
   const meshRef = useRef()
   const {
     radialSegments,
     animateRadius,
+    thetaFactor,
     thickness,
     uOffset,
     uXOffset,
@@ -92,6 +96,12 @@ const CurveMesh = ({ tubeData, index, material, color }) => {
   } = useControls({
     radialSegments: numSides,
     animateRadius: 0,
+    thetaFactor: {
+      value: 4.0,
+      min: 2,
+      max: 20,
+      step: 0.5,
+    },
     thickness: {
       value: 0.005,
       min: 0,
@@ -105,27 +115,29 @@ const CurveMesh = ({ tubeData, index, material, color }) => {
       step: 0.01,
     },
     uXOffset: {
-      value: 1,
+      value: 8,
       min: 0,
-      max: 8,
+      max: 18,
       step: 0.1,
     },
     uYOffset: {
-      value: 1,
+      value: 8,
       min: 0,
-      max: 8,
+      max: 18,
       step: 0.1,
     },
   })
 
-  const { posArray, angleArray, uvArray } = tubeData
   const t = totalMeshes <= 1 ? 0 : index / (totalMeshes - 1)
+  const { update } = suspend(() => createAudio(url), [url])
 
   useFrame((state, delta, xrFrame) => {
     delta = delta
     if (material.uniforms) {
       material.uniforms.time.value += delta
       material.uniforms.animateRadius.value = animateRadius
+      meshRef.current.material.uniforms.uXOffset.value = update() * 0.25
+      meshRef.current.material.uniforms.uYOffset.value = update() * 0.25
     }
   })
 
@@ -136,7 +148,8 @@ const CurveMesh = ({ tubeData, index, material, color }) => {
     meshRef.current.material.uniforms.animateRadius.value = animateRadius
     meshRef.current.material.uniforms.uOffset.value = uOffset
     meshRef.current.material.uniforms.uXOffset.value = uXOffset
-    meshRef.current.material.uniforms.uYOffset.value = uYOffset
+    meshRef.current.material.uniforms.uYOffset.value = uXOffset
+    meshRef.current.material.uniforms.thetaFactor.value = thetaFactor
     meshRef.current.material.uniforms.color.value = new THREE.Color(color)
   }, [
     radialSegments,
@@ -148,8 +161,13 @@ const CurveMesh = ({ tubeData, index, material, color }) => {
     color,
   ])
   return (
-    <mesh ref={meshRef} frustumCulled={false} material={material}>
-      <bufferGeometry>
+    <mesh
+      ref={meshRef}
+      frustumCulled={false}
+      material={material}
+      geometry={tubeGeom}
+    >
+      {/* <bufferGeometry>
         <bufferAttribute
           attach='attributes-position' // <- new attributes attach
           array={posArray}
@@ -168,15 +186,26 @@ const CurveMesh = ({ tubeData, index, material, color }) => {
           itemSize={2}
           count={uvArray.length}
         />
-      </bufferGeometry>
+      </bufferGeometry> */}
     </mesh>
   )
 }
-const tubeData = createTubeGeometry(numSides, subdivisions)
+const bubbleMaterial = new THREE.MeshPhysicalMaterial({
+  // color: palettes[0],
+  roughness: 0,
+  thickness: 0.25,
+  transmission: 1,
+  envMapIntensity: 0.2,
+  emissive: '#370037',
+  side: THREE.BackSide,
+})
 
-const ShapingCurves = () => {
+const ShapingCurves = ({ url }) => {
   const meshRef = useRef()
   const matRef = useRef()
+  const bubbleRefs = useRef([])
+  const { update } = suspend(() => createAudio(url), [url])
+
   const [material, setMaterial] = useState()
   const [paletteIdx, setPaletteIdx] = useState(paletteIndex)
   const materials = useMemo(
@@ -185,20 +214,24 @@ const ShapingCurves = () => {
     [totalMeshes, material]
   )
 
-  useEffect(() => void setMaterial(matRef.current))
-  const baubleMaterial = new THREE.MeshPhysicalMaterial({
-    color: palettes[paletteIdx],
-    roughness: 0,
-    thickness: 0.25,
-    transmission: 1,
-    envMapIntensity: 0.2,
-    emissive: '#370037',
-    side: THREE.BackSide,
+  useFrame(() => {
+    if (bubbleRefs?.current.length !== 0) {
+      for (let i = 0; i < bubbleRefs?.current.length; i++) {
+        if (!bubbleRefs?.current[i]?.material) return
+        // console.log(bubbleRefs.current[i].scale, i + update() * 0.1)
+
+        bubbleRefs.current[i].scale.set(
+          i + update() * 0.01,
+          i + update() * 0.01,
+          i + update() * 0.01
+        )
+      }
+    }
   })
+  useEffect(() => void setMaterial(matRef.current))
 
   const { gl } = useThree()
 
-  console.log({ meshRef })
   return (
     <>
       <group ref={meshRef}>
@@ -214,52 +247,38 @@ const ShapingCurves = () => {
             return (
               <CurveMesh
                 key={i}
-                tubeData={tubeData}
                 index={i}
                 material={materials[i]}
                 color={palettes[paletteIdx]}
+                url={url}
               />
             )
           })}
       </group>
-      <mesh
-        lights={true}
-        receiveShadow
-        rotation={[-Math.PI / 2, 0, 0]}
-        position={[0, -0.025, 0]}
-        // scale={[4, 4, 4]}
-        // visible={false}
-        onClick={() => {
-          console.log({ drawCalls: gl.info.render })
-          setPaletteIdx(Math.round(Math.random() * palettes.length))
-        }}
-        material={baubleMaterial}
-      >
-        <sphereGeometry />
-        <Environment files='/adamsbridge.hdr' />
+      {[...Array(totalMeshes * 0.25).keys()].map((_, i) => {
+        const scl = i * Math.random() * 10 + 1
+        return (
+          <mesh
+            ref={(ref) => bubbleRefs.current.push(ref)}
+            lights={true}
+            receiveShadow
+            rotation={[-Math.PI / 2, 0, 0]}
+            position={[0, -0.025, 0]}
+            // scale={[i * update(), i * update(), i * update()]}
+            // visible={false}
+            onClick={() => {
+              setPaletteIdx(Math.round(Math.random() * palettes.length))
+            }}
+            material={bubbleMaterial}
+          >
+            <sphereGeometry />
+            <Environment files='/adamsbridge.hdr' />
 
-        {/* <shadowMaterial transparent opacity={0.15} /> */}
-        {/* <meshBasicMaterial /> */}
-      </mesh>
-      <mesh
-        lights={true}
-        receiveShadow
-        rotation={[-Math.PI / 2, 0, 0]}
-        position={[0, -0.025, 0]}
-        scale={[1.5, 1.5, 1.5]}
-        // visible={false}
-        onClick={() => {
-          console.log({ drawCalls: gl.info.render })
-          setPaletteIdx(Math.round(Math.random() * palettes.length))
-        }}
-        material={baubleMaterial}
-      >
-        <sphereGeometry />
-        <Environment files='/adamsbridge.hdr' />
-
-        {/* <shadowMaterial transparent opacity={0.15} /> */}
-        {/* <meshBasicMaterial /> */}
-      </mesh>
+            <shadowMaterial transparent opacity={0.15} />
+            {/* <meshBasicMaterial /> */}
+          </mesh>
+        )
+      })}
     </>
   )
 }

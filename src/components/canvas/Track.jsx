@@ -24,7 +24,6 @@ export function Track({
     // Disconnect it on unmount
     return () => gain.disconnect()
   }, [gain, context])
-  const geometry = new THREE.ConeGeometry(5, 20, 32)
 
   useFrame((state) => {
     let avg = update()
@@ -49,7 +48,7 @@ export function Track({
       args={[null, null, data.length]}
       {...props}
     >
-      <planeBufferGeometry args={[width, height, 1]} />
+      <planeGeometry args={[width, height, 1]} />
 
       <meshBasicMaterial toneMapped={false} />
     </instancedMesh>

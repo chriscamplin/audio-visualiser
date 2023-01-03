@@ -107,5 +107,10 @@ export default function createTubeGeometry(
   console.log({ posArray, angleArray, uvArray })
 
   console.log({ baseGeometry })
-  return { posArray, angleArray, uvArray }
+  const tubeGeometry = new THREE.BufferGeometry()
+  tubeGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 1))
+  tubeGeometry.setAttribute('angle', new THREE.BufferAttribute(angleArray, 1))
+  tubeGeometry.setAttribute('uv', new THREE.BufferAttribute(uvArray, 2))
+
+  return tubeGeometry
 }

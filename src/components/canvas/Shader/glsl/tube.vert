@@ -15,6 +15,7 @@ uniform float animateRadius;
 uniform float animateStrength;
 uniform float index;
 uniform float radialSegments;
+uniform float thetaFactor;
 uniform float uOffset;
 uniform float uXOffset;
 uniform float uYOffset;
@@ -39,7 +40,7 @@ vec3 spherical (float r, float phi, float theta) {
   return r * vec3(
     cos(phi) * cos(theta)*uXOffset,
     cos(phi) * sin(theta)*uYOffset,
-    sin(phi)
+    sin(phi) * uYOffset
   );
 }
 
@@ -61,7 +62,7 @@ vec3 tKnotSample (float t) {
   float radiusAnimation = animateRadius * animateStrength * 0.25;
   float r = sin(index * 0.75 + beta * 2.0) * (0.75 + radiusAnimation);
   float theta = 4.0 * beta + index * 0.25;
-  float phi = sin(index * 2.0 + beta * 8.0 + noise);
+  float phi = sin(index * 4.0 + beta * 8.0 + noise);
 
   return spherical(r, phi, theta);
 }
@@ -199,7 +200,7 @@ void main() {
   vec2 volume = vec2(thickness);
 
   // animate the per-vertex curve thickness
-  float volumeAngle = t * lengthSegments * 0.5 + index * 20.0 + time * 2.5;
+  float volumeAngle = t * lengthSegments * 0.5 + index * uYOffset + time * 2.5;
   float volumeMod = sin(volumeAngle) * 0.5 + 0.5;
   volume += 0.01 * volumeMod;
 
