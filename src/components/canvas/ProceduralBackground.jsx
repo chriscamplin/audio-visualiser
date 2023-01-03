@@ -1,11 +1,10 @@
+import { useRef, useState } from 'react'
+import { Box } from '@react-three/drei'
+import { useFrame } from '@react-three/fiber'
+import { suspend } from 'suspend-react'
 import * as THREE from 'three'
 
-import { useRef, useState } from 'react'
-
-import { Box } from '@react-three/drei'
 import createAudio from '@/helpers/createAudio'
-import { suspend } from 'suspend-react'
-import { useFrame } from '@react-three/fiber'
 
 const ProceduralBackground = ({ url }) => {
   const boxRef = useRef()
@@ -16,7 +15,7 @@ const ProceduralBackground = ({ url }) => {
   const { update } = suspend(() => createAudio(url), [url])
 
   useFrame(({ clock }) => {
-    let avg = update() * 0.065
+    const avg = update() * 0.065
     uniforms.time.value = clock.elapsedTime
     uniforms.avg.value = avg
     if (!boxRef?.current) return
@@ -28,26 +27,26 @@ const ProceduralBackground = ({ url }) => {
     shader.uniforms = { ...shader.uniforms, ...uniforms }
 
     // Add to top of vertex shader
-    shader.vertexShader =
-      /* glsl */ `
+    shader.vertexShader = /* glsl */ `
       varying vec2 vUv;
       varying float nHash;
       uniform float time;
       uniform float avg;
-    ` + shader.vertexShader
+    ${shader.vertexShader}`
     // Assign values to varyings inside of main()
     shader.vertexShader = shader.vertexShader.replace(
       /void main\(\) {/,
       (match) =>
-        match +
-        /* glsl */ `
+        `${
+          match
+          /* glsl */
+        }
           vUv = uv;
         `
     )
 
     // Add to top of fragment shader
-    shader.fragmentShader =
-      /* glsl */ `
+    shader.fragmentShader = /* glsl */ `
         uniform float time;
       uniform float avg;
 
@@ -60,13 +59,15 @@ const ProceduralBackground = ({ url }) => {
           return fract(p.x*p.y);
         }
 
-      ` + shader.fragmentShader
+      ${shader.fragmentShader}`
 
     shader.fragmentShader = shader.fragmentShader.replace(
       /void main\(\) {/,
       (match) =>
-        match +
-        /* glsl */ `
+        `${
+          match
+          /* glsl */
+        }
         vec3 color = vec3(0.);
         vec2 newUv = vUv*10.;//*(avg/20.);
         newUv.x+=time*.5;
@@ -92,7 +93,6 @@ const ProceduralBackground = ({ url }) => {
 
       `
     )
-    console.log(shader.fragmentShader)
     shader.fragmentShader = shader.fragmentShader.replace(
       /vec4 diffuseColor.*;/,
       /* glsl */ `

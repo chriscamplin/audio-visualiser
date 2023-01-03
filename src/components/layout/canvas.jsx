@@ -1,12 +1,9 @@
-import {
-  OrbitControls,
-  PerformanceMonitor,
-  Preload,
-  Stats,
-} from '@react-three/drei'
-import { StrictMode, useEffect, useRef, useState } from 'react'
-
+import { StrictMode, useEffect, useRef } from 'react'
+import { OrbitControls, PerformanceMonitor, Stats } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
+
+import RecordCanvas from '@/components/dom/RecordCanvas'
+
 import useStore from '@/helpers/store'
 
 const LControl = () => {
@@ -24,7 +21,6 @@ const LControl = () => {
       }
     }
   }, [dom, control])
-  // @ts-ignore
   return <OrbitControls ref={control} domElement={dom.current} />
 }
 
@@ -32,8 +28,10 @@ const LCanvas = ({ children }) => {
   const canvasRef = useRef()
   console.log(canvasRef)
   const dom = useStore((state) => state.dom)
+
   return (
     <StrictMode>
+      <RecordCanvas canvRef={canvasRef} />
       <Canvas
         ref={canvasRef}
         style={{
@@ -48,6 +46,7 @@ const LCanvas = ({ children }) => {
         gl={{
           alpha: false,
           sortObjects: false,
+          preserveDrawingBuffer: true,
         }}
         dpr={1}
         camera={{ position: [-1, 1.5, 2], fov: 65 }}
