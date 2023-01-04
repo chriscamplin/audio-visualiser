@@ -1,5 +1,5 @@
 import { StrictMode, useEffect, useRef } from 'react'
-import { OrbitControls, PerformanceMonitor, Stats } from '@react-three/drei'
+import { OrbitControls, Preload, Stats } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 
 import RecordCanvas from '@/components/dom/RecordCanvas'
@@ -41,7 +41,7 @@ const LCanvas = ({ children }) => {
           top: 0,
         }}
         shadows
-        onCreated={({ events, gl }) => {
+        onCreated={({ events }) => {
           // console.log(gl)
           events.connect(dom.current)
         }}
@@ -57,9 +57,9 @@ const LCanvas = ({ children }) => {
         {/* 💡 not having a clear color would glitch the recording */}
         <color attach='background' args={['#000']} />
 
-        {/* <Stats /> */}
+        <Stats />
         <LControl />
-        {/* <Preload all /> */}
+        <Preload all />
         {children}
       </Canvas>
     </StrictMode>

@@ -1,19 +1,21 @@
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { Environment } from '@react-three/drei'
+import { extend, useFrame } from '@react-three/fiber'
+import { useControls } from 'leva'
+import { suspend } from 'suspend-react'
 import * as THREE from 'three'
 
-import { extend, useFrame, useThree } from '@react-three/fiber'
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-
-import { Environment } from '@react-three/drei'
-import createAudio from '@/helpers/createAudio'
 import createTubeGeometry from '@/components/canvas/createTubeGeometry'
 import fragment from '@/components/canvas/Shader/glsl/tube.frag'
-import { randomFloat } from '@/lib/random'
-import { suspend } from 'suspend-react'
-import { useControls } from 'leva'
+// import { shaderMaterial } from '@react-three/drei'
 // import useStore from '@/helpers/store'
 import vertex from '@/components/canvas/Shader/glsl/tube.vert'
 
-const totalMeshes = 40
+import createAudio from '@/helpers/createAudio'
+
+// import { randomFloat } from '@/lib/random'
+
+const totalMeshes = 20
 const numSides = 8
 const subdivisions = 300
 const isSquare = false
@@ -41,7 +43,7 @@ const palettes = [
   '#9cc4e4',
   '#515151',
 ]
-let paletteIndex = 0
+const paletteIndex = 0
 
 class CurveMaterial extends THREE.RawShaderMaterial {
   constructor() {
@@ -131,8 +133,7 @@ const CurveMesh = ({ index, material, color, url }) => {
   const t = totalMeshes <= 1 ? 0 : index / (totalMeshes - 1)
   const { update } = suspend(() => createAudio(url), [url])
 
-  useFrame((state, delta, xrFrame) => {
-    delta = delta
+  useFrame((state, delta) => {
     if (material.uniforms) {
       material.uniforms.time.value += delta
       material.uniforms.animateRadius.value = animateRadius
@@ -148,18 +149,10 @@ const CurveMesh = ({ index, material, color, url }) => {
     meshRef.current.material.uniforms.animateRadius.value = animateRadius
     meshRef.current.material.uniforms.uOffset.value = uOffset
     meshRef.current.material.uniforms.uXOffset.value = uXOffset
-    meshRef.current.material.uniforms.uYOffset.value = uXOffset
+    meshRef.current.material.uniforms.uYOffset.value = uYOffset
     meshRef.current.material.uniforms.thetaFactor.value = thetaFactor
     meshRef.current.material.uniforms.color.value = new THREE.Color(color)
-  }, [
-    radialSegments,
-    animateRadius,
-    thickness,
-    uOffset,
-    uXOffset,
-    uYOffset,
-    color,
-  ])
+  })
   return (
     <mesh
       ref={meshRef}
@@ -211,7 +204,7 @@ const ShapingCurves = ({ url }) => {
   const materials = useMemo(
     () =>
       material && [...Array(totalMeshes).keys()].map(() => material.clone()),
-    [totalMeshes, material]
+    [material]
   )
 
   useFrame(() => {
@@ -228,9 +221,9 @@ const ShapingCurves = ({ url }) => {
       }
     }
   })
-  useEffect(() => void setMaterial(matRef.current))
+  useEffect(() => setMaterial(matRef.current), [setMaterial])
 
-  const { gl } = useThree()
+  // const { gl } = useThree()
 
   return (
     <>
@@ -243,42 +236,39 @@ const ShapingCurves = ({ url }) => {
         />
 
         {material &&
-          [...Array(totalMeshes).keys()].map((_, i) => {
-            return (
-              <CurveMesh
-                key={i}
-                index={i}
-                material={materials[i]}
-                color={palettes[paletteIdx]}
-                url={url}
-              />
-            )
-          })}
+          [...Array(totalMeshes).keys()].map((_, i) => (
+            <CurveMesh
+              key={i}
+              index={i}
+              material={materials[i]}
+              color={palettes[paletteIdx]}
+            />
+          ))}
       </group>
-      {[...Array(totalMeshes * 0.25).keys()].map((_, i) => {
-        const scl = i * Math.random() * 10 + 1
-        return (
-          <mesh
-            ref={(ref) => bubbleRefs.current.push(ref)}
-            lights={true}
-            receiveShadow
-            rotation={[-Math.PI / 2, 0, 0]}
-            position={[0, -0.025, 0]}
-            // scale={[i * update(), i * update(), i * update()]}
-            // visible={false}
-            onClick={() => {
-              setPaletteIdx(Math.round(Math.random() * palettes.length))
-            }}
-            material={bubbleMaterial}
-          >
-            <sphereGeometry />
-            <Environment files='/adamsbridge.hdr' />
+      {[...Array(totalMeshes * 0.25).keys()].map(() => (
+        // const scl = i * Math.random() * 10 + 1
 
-            <shadowMaterial transparent opacity={0.15} />
-            {/* <meshBasicMaterial /> */}
-          </mesh>
-        )
-      })}
+        <mesh
+          key={Math.random()}
+          ref={(ref) => bubbleRefs.current.push(ref)}
+          lights={true}
+          receiveShadow
+          rotation={[-Math.PI / 2, 0, 0]}
+          position={[0, -0.025, 0]}
+          // scale={[i * update(), i * update(), i * update()]}
+          // visible={false}
+          onClick={() => {
+            setPaletteIdx(Math.round(Math.random() * palettes.length))
+          }}
+          material={bubbleMaterial}
+        >
+          <sphereGeometry />
+          <Environment files='/adamsbridge.hdr' />
+
+          <shadowMaterial transparent opacity={0.15} />
+          {/* <meshBasicMaterial /> */}
+        </mesh>
+      ))}
     </>
   )
 }

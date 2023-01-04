@@ -1,17 +1,17 @@
 import React, { useMemo, useRef } from 'react'
 import { Instance, Instances } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
-import { suspend } from 'suspend-react'
+// import { suspend } from 'suspend-react'
 import * as THREE from 'three'
 
-import createAudio from '@/helpers/createAudio'
+// import createAudio from '@/helpers/createAudio'
 
 const roundedSquareWave = (t, delta, a, f) =>
   ((2.0 * a) / Math.PI) * Math.atan(Math.sin(2.0 * Math.PI * t * f) / delta)
 // const scale = new THREE.Vector3()
-function Dot({ url, size, numDots }) {
+function Dot({ size, numDots }) {
   const ref = useRef()
-  const { update } = suspend(() => createAudio(url), [url])
+  // const { update } = suspend(() => createAudio(url), [url])
 
   const { vec, transform, positions, distances } = useMemo(() => {
     const vec = new THREE.Vector3()
@@ -52,10 +52,10 @@ function Dot({ url, size, numDots }) {
   console.log({ transform })
 
   useFrame(({ clock }) => {
-    const avg = update()
+    // const avg = update()
     for (let i = 0; i < numDots; i++) {
       const dist = distances[i]
-      const scl = dist * 0.1
+      // const scl = dist * 0.1
       // Distance affects the wave phase
       const t = clock.elapsedTime - dist / 7.5
       const wave = roundedSquareWave(t, 0.15 + (0.2 * dist) / 72, 0.4, 1 / 3.8)
@@ -112,7 +112,7 @@ function Dot({ url, size, numDots }) {
   )
 }
 
-function Dots({ url, numDots = 10000, size = 0.5 }) {
+function Dots({ url, numDots = 10000, size = 0.1 }) {
   return <Dot url={url} numDots={numDots} size={size} />
 }
 

@@ -38,22 +38,22 @@ out vec3 vNormal;
 // Angles to spherical coordinates
 vec3 spherical (float r, float phi, float theta) {
   return r * vec3(
-    cos(phi) * cos(theta)*uXOffset,
-    cos(phi) * sin(theta)*uYOffset,
-    sin(phi) * uYOffset
+    cos(phi) * cos(theta*uXOffset),
+    cos(phi) * sin(theta*uYOffset),
+    sin(phi*uXOffset)
   );
 }
 
 // Flying a curve along a sine wave
-// vec3 sample (float t) {
-//   float x = t * 2.0 - 1.0;
-//   float y = sin(t + time);
-//   return vec3(x, y, 0.0);
-// }
+vec3 sinSample (float t) {
+  float x = t * 2.0 - 1.0;
+  float y = sin(t + time);
+  return vec3(x, y, 0.0);
+}
 
 // Creates an animated torus knot
 vec3 tKnotSample (float t) {
-  float beta = t * PI;
+  float beta = t * (PI*1.0);
   
   float ripple = ease(sin(t * 2.0 * PI + time) * 0.5 + 0.5) * 0.5;
   float noise = time + index * ripple * 8.0;
@@ -90,8 +90,8 @@ void createTube (float t, vec2 volume, out vec3 outPosition, out vec3 outNormal)
   float nextT = t + (1.0 / lengthSegments);
 
   // find first tangent
-  vec3 point0 = tKnotSample(0.0);
-  vec3 point1 = tKnotSample(100.0 / lengthSegments);
+  vec3 point0 = sinSample(0.0);
+  vec3 point1 = sinSample(100.0 / lengthSegments);
 
   vec3 lastTangent = getTangent(point0, point1);
   vec3 absTangent = abs(lastTangent);
@@ -127,7 +127,7 @@ void createTube (float t, vec2 volume, out vec3 outPosition, out vec3 outNormal)
     float u = i / maxLen*10.;
     // could avoid additional sample here at expense of ternary
     // point = i == 1.0 ? point1 : sample(u);
-    point = tKnotSample(u);
+    point = sinSample(u);
     tangent = getTangent(lastPoint, point);
     normal = lastNormal;
     binormal = lastBinormal;
@@ -172,8 +172,8 @@ void createTube (float t, vec2 volume, out vec3 offset, out vec3 normal) {
   float nextT = t + (1.0 / lengthSegments);
 
   // sample the curve in two places
-  vec3 current = tKnotSample(t);
-  vec3 next = tKnotSample(nextT);
+  vec3 current = sinSample(t);
+  vec3 next = sinSample(nextT);
   
   // compute the TBN matrix
   vec3 T = normalize(next - current);

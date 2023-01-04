@@ -3,20 +3,19 @@ import { Suspense } from 'react'
 // import { Environment } from '@react-three/drei'
 import dynamic from 'next/dynamic'
 
-import ProceduralBackground from '@/components/canvas/ProceduralBackground'
-
+// import ProceduralBackground from '@/components/canvas/ProceduralBackground'
 // import { Track, Zoom } from '@/components/canvas/track'
 // import ShapingCurves from '@/components/canvas/ShapingCurves'
 import useStore from '@/helpers/store/'
 
 // import ShapingCurves from '@/components/canvas/ShapingCurves'
 
-const ShapingCurves = dynamic(
-  () => import('@/components/canvas/ShapingCurves'),
-  {
-    ssr: false,
-  }
-)
+// const ShapingCurves = dynamic(
+//   () => import('@/components/canvas/ShapingCurves'),
+//   {
+//     ssr: false,
+//   }
+// )
 // const BubbleEmitter = dynamic(
 //   () => import('@/components/canvas/BubbleEmitter'),
 //   {
