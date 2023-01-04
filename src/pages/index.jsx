@@ -17,7 +17,7 @@ const AudioViz = dynamic(() => import('@/components/canvas/AudioViz'), {
 const Page = (props) => {
   return (
     <>
-      <div style={{ color: '#fff', textAlign: 'center' }}>AUDIO VISUALISER</div>
+      <div style={{ color: '#fff', textAlign: 'center' }}></div>
     </>
   )
 }

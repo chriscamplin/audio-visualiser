@@ -55,7 +55,7 @@ const Shader = (props) => {
       onPointerOut={(e) => setHover(false)}
       {...props}
     >
-      <boxGeometry args={[1, 1, 1]} />
+      <boxGeometry args={[1, 1, -5]} />
       <colorShiftMaterial key={ColorShiftMaterial.key} time={3} />
     </mesh>
   ) : null

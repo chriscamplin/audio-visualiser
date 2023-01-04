@@ -1,16 +1,17 @@
-import { useRef, useState } from 'react'
-import { Box } from '@react-three/drei'
-import { useFrame } from '@react-three/fiber'
-import { suspend } from 'suspend-react'
 import * as THREE from 'three'
 
+import { useRef, useState } from 'react'
+
+import { Box } from '@react-three/drei'
 import createAudio from '@/helpers/createAudio'
+import { suspend } from 'suspend-react'
+import { useFrame } from '@react-three/fiber'
 
 const ProceduralBackground = ({ url }) => {
   const boxRef = useRef()
   const [uniforms] = useState(() => ({
     time: { value: 0 },
-    avg: { value: 10 },
+    avg: { value: 12.5 },
   }))
   const { update } = suspend(() => createAudio(url), [url])
 
@@ -19,7 +20,7 @@ const ProceduralBackground = ({ url }) => {
     uniforms.time.value = clock.elapsedTime
     uniforms.avg.value = avg
     if (!boxRef?.current) return
-    boxRef.current.rotation.x += 0.005
+    //boxRef.current.rotation.x += 0.005
   })
 
   const onBeforeCompile = (shader) => {
@@ -96,7 +97,7 @@ const ProceduralBackground = ({ url }) => {
     shader.fragmentShader = shader.fragmentShader.replace(
       /vec4 diffuseColor.*;/,
       /* glsl */ `
-      color+=vec3(mask);//,.01,mask);
+      color+=vec3(1.);//,.01,mask);
       vec4 diffuseColor = vec4(color, 1.);      
       `
     )
@@ -105,7 +106,7 @@ const ProceduralBackground = ({ url }) => {
   return (
     <Box ref={boxRef} args={[50, 50, 50]}>
       <meshPhysicalMaterial
-        onBeforeCompile={onBeforeCompile}
+        // onBeforeCompile={onBeforeCompile}
         onUpdate={(m) => (m.needsUpdate = true)}
         customProgramCacheKey={() => onBeforeCompile.toString()}
         side={THREE.BackSide}

@@ -1,36 +1,37 @@
+// import * as THREE from 'three'
 import { Suspense } from 'react'
 // import { Environment } from '@react-three/drei'
 import dynamic from 'next/dynamic'
 
-// import * as THREE from 'three'
-import ProceduralBackground from '@/components/canvas/ProceduralBackground'
-
+// import ProceduralBackground from '@/components/canvas/ProceduralBackground'
 // import { Track, Zoom } from '@/components/canvas/track'
 // import ShapingCurves from '@/components/canvas/ShapingCurves'
 import useStore from '@/helpers/store/'
 
-const ShapingCurves = dynamic(
-  () => import('@/components/canvas/ShapingCurves'),
-  {
-    ssr: false,
-  }
-)
+// import ShapingCurves from '@/components/canvas/ShapingCurves'
+
+// const ShapingCurves = dynamic(
+//   () => import('@/components/canvas/ShapingCurves'),
+//   {
+//     ssr: false,
+//   }
+// )
 // const BubbleEmitter = dynamic(
 //   () => import('@/components/canvas/BubbleEmitter'),
 //   {
 //     ssr: false,
 //   }
 // )
-const MarbleWrapper = dynamic(
-  () => import('@/components/canvas/MarbleWrapper'),
-  {
-    ssr: false,
-  }
-)
+// const MarbleWrapper = dynamic(
+//   () => import('@/components/canvas/MarbleWrapper'),
+//   {
+//     ssr: false,
+//   }
+// )
 
-// const Dots = dynamic(() => import('@/components/canvas/Dots'), {
-//   ssr: false,
-// })
+const Dots = dynamic(() => import('@/components/canvas/Dots'), {
+  ssr: false,
+})
 // const Audio = dynamic(() => import('@/components/canvas/Audio'), {
 //   ssr: false,
 // })
@@ -39,7 +40,7 @@ const MarbleWrapper = dynamic(
 
 const AudioViz = () => {
   const viewAudioViz = useStore((state) => state.viewAudioViz)
-  const url = '/audio/traxManSafeNoMo.mp3'
+  const url = '/audio/GarageTechno.mp3'
 
   return viewAudioViz ? (
     <>
@@ -52,11 +53,10 @@ const AudioViz = () => {
         castShadow
         shadow-mapSize={[512, 512]}
       />
-      <directionalLight
-        intensity={5}
-        position={[-10, -10, -10]}
-        color='purple'
-      />
+      <directionalLight intensity={5} position={[0, 0, 0]} color='#28c8e4' />
+      <pointLight position={[100, 10, -50]} intensity={20} castShadow />
+      <pointLight position={[-100, -100, -100]} intensity={10} color='red' />
+
       {/* <Environment
         background={false} // can be true, false or "only" (which only sets the background) (default: false)
         path='/'
@@ -70,14 +70,25 @@ const AudioViz = () => {
       <Suspense fallback={null}>
         {/* <Track position-z={-0.25} url="/synth.mp3" />
         <Track position-z={0} url="/snare.mp3" />
-        <Track position-z={0.25} url="/drum.mp3" />
-        <Zoom url="/drum.mp3" /> */}
-        {/* <Dots /> */}
-        <ShapingCurves />
-        {/* <BubbleEmitter url={'/audio/drum.mp3'} /> */}
-        <ProceduralBackground url={url} />
+        <Track position-z={0.25} url="/drum.mp3" /> */}
+        {/* <Zoom url={'/audio/drum.mp3'} /> */}
+        <Dots url={url} />
+        {/* <Cube url={url} /> */}
+        {/* <EffectComposer multisampling={0}>
+          <SSAO
+            samples={31}
+            radius={0.1}
+            intensity={30}
+            luminanceInfluence={0.1}
+            color='red'
+          />
+        </EffectComposer> */}
+
+        {/* <ShapingCurves url={url} /> */}
+        {/* <BubbleEmitter url={url} /> */}
+        {/* <ProceduralBackground url={url} /> */}
         {/* <Audio url={url} /> */}
-        <MarbleWrapper />
+        {/* <MarbleWrapper /> */}
       </Suspense>
     </>
   ) : null

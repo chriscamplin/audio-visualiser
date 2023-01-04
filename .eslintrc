@@ -103,8 +103,9 @@
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "@next/next/no-img-element": 0,
+    "no-plusplus": 0,
     "simple-import-sort/imports": [
-      "error",
+      "warn",
       {
         "groups": [
           ["^react", "^\\u0000", "^@?\\w"],

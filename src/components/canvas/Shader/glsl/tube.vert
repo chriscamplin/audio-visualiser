@@ -15,6 +15,7 @@ uniform float animateRadius;
 uniform float animateStrength;
 uniform float index;
 uniform float radialSegments;
+uniform float thetaFactor;
 uniform float uOffset;
 uniform float uXOffset;
 uniform float uYOffset;
@@ -44,11 +45,11 @@ vec3 spherical (float r, float phi, float theta) {
 }
 
 // Flying a curve along a sine wave
-// vec3 sample (float t) {
-//   float x = t * 2.0 - 1.0;
-//   float y = sin(t + time);
-//   return vec3(x, y, 0.0);
-// }
+vec3 sinSample (float t) {
+  float x = t * 2.0 - 1.0;
+  float y = sin(t + time);
+  return vec3(x, y, 0.0);
+}
 
 // Creates an animated torus knot
 vec3 tKnotSample (float t) {
@@ -61,7 +62,7 @@ vec3 tKnotSample (float t) {
   float radiusAnimation = animateRadius * animateStrength * 0.25;
   float r = sin(index * 0.75 + beta * 2.0) * (0.75 + radiusAnimation);
   float theta = 4.0 * beta + index * 0.25;
-  float phi = sin(index * 2.0 + beta * 8.0 + noise);
+  float phi = sin(index * 4.0 + beta * 8.0 + noise);
 
   return spherical(r, phi, theta);
 }
@@ -89,8 +90,8 @@ void createTube (float t, vec2 volume, out vec3 outPosition, out vec3 outNormal)
   float nextT = t + (1.0 / lengthSegments);
 
   // find first tangent
-  vec3 point0 = tKnotSample(0.0);
-  vec3 point1 = tKnotSample(100.0 / lengthSegments);
+  vec3 point0 = sinSample(0.0);
+  vec3 point1 = sinSample(100.0 / lengthSegments);
 
   vec3 lastTangent = getTangent(point0, point1);
   vec3 absTangent = abs(lastTangent);
@@ -126,7 +127,7 @@ void createTube (float t, vec2 volume, out vec3 outPosition, out vec3 outNormal)
     float u = i / maxLen*10.;
     // could avoid additional sample here at expense of ternary
     // point = i == 1.0 ? point1 : sample(u);
-    point = tKnotSample(u);
+    point = sinSample(u);
     tangent = getTangent(lastPoint, point);
     normal = lastNormal;
     binormal = lastBinormal;
@@ -171,8 +172,8 @@ void createTube (float t, vec2 volume, out vec3 offset, out vec3 normal) {
   float nextT = t + (1.0 / lengthSegments);
 
   // sample the curve in two places
-  vec3 current = tKnotSample(t);
-  vec3 next = tKnotSample(nextT);
+  vec3 current = sinSample(t);
+  vec3 next = sinSample(nextT);
   
   // compute the TBN matrix
   vec3 T = normalize(next - current);
@@ -199,7 +200,7 @@ void main() {
   vec2 volume = vec2(thickness);
 
   // animate the per-vertex curve thickness
-  float volumeAngle = t * lengthSegments * 0.5 + index * 20.0 + time * 2.5;
+  float volumeAngle = t * lengthSegments * 0.5 + index * uYOffset + time * 2.5;
   float volumeMod = sin(volumeAngle) * 0.5 + 0.5;
   volume += 0.01 * volumeMod;
 
