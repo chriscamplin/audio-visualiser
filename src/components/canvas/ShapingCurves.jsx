@@ -1,16 +1,16 @@
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { Environment } from '@react-three/drei'
+import { extend, useFrame, useThree } from '@react-three/fiber'
+import { useControls } from 'leva'
 import * as THREE from 'three'
 
-import { extend, useFrame, useThree } from '@react-three/fiber'
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-
-import { Environment } from '@react-three/drei'
 import createTubeGeometry from '@/components/canvas/createTubeGeometry'
 import fragment from '@/components/canvas/Shader/glsl/tube.frag'
-import { randomFloat } from '@/lib/random'
-import { useControls } from 'leva'
 // import { shaderMaterial } from '@react-three/drei'
 // import useStore from '@/helpers/store'
 import vertex from '@/components/canvas/Shader/glsl/tube.vert'
+
+// import { randomFloat } from '@/lib/random'
 
 const totalMeshes = 20
 const numSides = 8
@@ -40,7 +40,7 @@ const palettes = [
   '#9cc4e4',
   '#515151',
 ]
-let paletteIndex = 0
+const paletteIndex = 0
 
 class CurveMaterial extends THREE.RawShaderMaterial {
   constructor() {
@@ -121,8 +121,7 @@ const CurveMesh = ({ tubeData, index, material, color }) => {
   const { posArray, angleArray, uvArray } = tubeData
   const t = totalMeshes <= 1 ? 0 : index / (totalMeshes - 1)
 
-  useFrame((state, delta, xrFrame) => {
-    delta = delta
+  useFrame((state, delta) => {
     if (material.uniforms) {
       material.uniforms.time.value += delta
       material.uniforms.animateRadius.value = animateRadius
@@ -138,15 +137,7 @@ const CurveMesh = ({ tubeData, index, material, color }) => {
     meshRef.current.material.uniforms.uXOffset.value = uXOffset
     meshRef.current.material.uniforms.uYOffset.value = uYOffset
     meshRef.current.material.uniforms.color.value = new THREE.Color(color)
-  }, [
-    radialSegments,
-    animateRadius,
-    thickness,
-    uOffset,
-    uXOffset,
-    uYOffset,
-    color,
-  ])
+  })
   return (
     <mesh ref={meshRef} frustumCulled={false} material={material}>
       <bufferGeometry>
@@ -182,10 +173,10 @@ const ShapingCurves = () => {
   const materials = useMemo(
     () =>
       material && [...Array(totalMeshes).keys()].map(() => material.clone()),
-    [totalMeshes, material]
+    [material]
   )
 
-  useEffect(() => void setMaterial(matRef.current))
+  useEffect(() => setMaterial(matRef.current), [setMaterial])
   const baubleMaterial = new THREE.MeshPhysicalMaterial({
     color: palettes[paletteIdx],
     roughness: 0,
@@ -210,17 +201,15 @@ const ShapingCurves = () => {
         />
 
         {material &&
-          [...Array(totalMeshes).keys()].map((_, i) => {
-            return (
-              <CurveMesh
-                key={i}
-                tubeData={tubeData}
-                index={i}
-                material={materials[i]}
-                color={palettes[paletteIdx]}
-              />
-            )
-          })}
+          [...Array(totalMeshes).keys()].map((_, i) => (
+            <CurveMesh
+              key={i}
+              tubeData={tubeData}
+              index={i}
+              material={materials[i]}
+              color={palettes[paletteIdx]}
+            />
+          ))}
       </group>
       <mesh
         lights={true}

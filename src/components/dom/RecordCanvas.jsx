@@ -25,7 +25,7 @@ const RecordCanvas = ({ canvRef }) => {
         }
       }
       mediaRecorder.start()
-    } else {
+    } else if (recordedChunks.length !== 0) {
       // recordBtn.textContent = 'Record'
       mediaRecorder?.stop()
       setTimeout(() => {
