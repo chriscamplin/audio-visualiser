@@ -1,8 +1,9 @@
-import { OrbitControls, PerformanceMonitor, Stats } from '@react-three/drei'
 import { StrictMode, useEffect, useRef } from 'react'
-
+import { OrbitControls, PerformanceMonitor, Stats } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
+
 import RecordCanvas from '@/components/dom/RecordCanvas'
+
 import useStore from '@/helpers/store'
 
 const LControl = () => {
@@ -51,7 +52,7 @@ const LCanvas = ({ children }) => {
           preserveDrawingBuffer: true,
         }}
         dpr={1}
-        camera={{ zoom: 14, position: [0, 0, 2], fov: 40 }}
+        camera={{ position: [0, 0, 10], fov: 65 }}
       >
         {/* 💡 not having a clear color would glitch the recording */}
         <color attach='background' args={['#000']} />

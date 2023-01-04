@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 
+let mediaRecorder
+
 const RecordCanvas = ({ canvRef }) => {
   const [recording, setRecording] = useState(false)
   const [recordedChunks, setRecordedChunks] = useState([])
@@ -9,8 +11,6 @@ const RecordCanvas = ({ canvRef }) => {
     setRecording(!recording)
   }
   useEffect(() => {
-    let mediaRecorder
-
     if (recording) {
       const stream = canvRef.current.captureStream(FPS)
       mediaRecorder = new MediaRecorder(stream, {
@@ -47,7 +47,14 @@ const RecordCanvas = ({ canvRef }) => {
   return (
     <button
       onClick={handleClick}
-      style={{ position: 'fixed', left: 0, bottom: 0, zIndex: 10 }}
+      style={{
+        position: 'fixed',
+        left: 0,
+        bottom: 0,
+        zIndex: 10,
+        padding: '10px',
+        background: '#fff',
+      }}
     >
       {!recording ? 'Start Recording' : 'Stop Recording'}
     </button>

@@ -1,14 +1,15 @@
 // import * as THREE from 'three'
-import ProceduralBackground from '@/components/canvas/ProceduralBackground'
 import { Suspense } from 'react'
 // import { Environment } from '@react-three/drei'
 import dynamic from 'next/dynamic'
+
+import ProceduralBackground from '@/components/canvas/ProceduralBackground'
+
 // import { Track, Zoom } from '@/components/canvas/track'
 // import ShapingCurves from '@/components/canvas/ShapingCurves'
 import useStore from '@/helpers/store/'
 
 // import ShapingCurves from '@/components/canvas/ShapingCurves'
-
 
 const ShapingCurves = dynamic(
   () => import('@/components/canvas/ShapingCurves'),
@@ -22,16 +23,16 @@ const ShapingCurves = dynamic(
 //     ssr: false,
 //   }
 // )
-const MarbleWrapper = dynamic(
-  () => import('@/components/canvas/MarbleWrapper'),
-  {
-    ssr: false,
-  }
-)
+// const MarbleWrapper = dynamic(
+//   () => import('@/components/canvas/MarbleWrapper'),
+//   {
+//     ssr: false,
+//   }
+// )
 
-// const Dots = dynamic(() => import('@/components/canvas/Dots'), {
-//   ssr: false,
-// })
+const Dots = dynamic(() => import('@/components/canvas/Dots'), {
+  ssr: false,
+})
 // const Audio = dynamic(() => import('@/components/canvas/Audio'), {
 //   ssr: false,
 // })
@@ -70,7 +71,7 @@ const AudioViz = () => {
       <Suspense fallback={null}>
         {/* <Track position-z={-0.25} url="/synth.mp3" />
         <Track position-z={0} url="/snare.mp3" />
-        <Track position-z={0.25} url="/drum.mp3" />*/}
+        <Track position-z={0.25} url="/drum.mp3" /> */}
         {/* <Zoom url={'/audio/drum.mp3'} /> */}
         <Dots url={url} />
         {/* <Cube url={url} /> */}
