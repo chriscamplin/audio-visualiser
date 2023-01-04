@@ -37,9 +37,9 @@ out vec3 vNormal;
 // Angles to spherical coordinates
 vec3 spherical (float r, float phi, float theta) {
   return r * vec3(
-    cos(phi) * cos(theta)*uXOffset,
-    cos(phi) * sin(theta)*uYOffset,
-    sin(phi)
+    cos(phi) * cos(theta*uXOffset),
+    cos(phi) * sin(theta*uYOffset),
+    sin(phi*uXOffset)
   );
 }
 
@@ -52,7 +52,7 @@ vec3 spherical (float r, float phi, float theta) {
 
 // Creates an animated torus knot
 vec3 tKnotSample (float t) {
-  float beta = t * PI;
+  float beta = t * (PI*1.0);
   
   float ripple = ease(sin(t * 2.0 * PI + time) * 0.5 + 0.5) * 0.5;
   float noise = time + index * ripple * 8.0;
