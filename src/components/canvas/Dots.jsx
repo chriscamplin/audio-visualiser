@@ -112,7 +112,7 @@ function Dot({ size, numDots }) {
   )
 }
 
-function Dots({ url, numDots = 10000, size = 0.1 }) {
+function Dots({ url, numDots = 10000, size = 0.25 }) {
   return <Dot url={url} numDots={numDots} size={size} />
 }
 

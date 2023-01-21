@@ -1,17 +1,17 @@
-import * as THREE from 'three'
-
-import { Physics, useBox, usePlane, useSphere } from '@react-three/cannon'
-import { a as a3, useSpring as useSpringThree } from '@react-spring/three'
 import { useMemo, useRef, useState } from 'react'
-
-import { Color } from 'three'
-import createAudio from '@/helpers/createAudio'
+// import { a as a3, useSpring as useSpringThree } from '@react-spring/three'
+import { Physics, useBox, usePlane, useSphere } from '@react-three/cannon'
+import { useFrame } from '@react-three/fiber'
 import niceColors from 'nice-color-palettes'
 import { suspend } from 'suspend-react'
-import { useFrame } from '@react-three/fiber'
+import * as THREE from 'three'
+import { Color } from 'three'
+
+import createAudio from '@/helpers/createAudio'
 
 function Plane(props) {
   const [ref] = usePlane(() => ({ ...props }), useRef())
+
   return (
     <mesh ref={ref} receiveShadow>
       <planeBufferGeometry args={[5, 5]} />
@@ -74,15 +74,14 @@ const Bubbles = ({ colors, number, size, url, obj }) => {
     avg: { value: 10 },
   }))
 
-  const { update, data } = suspend(() => createAudio(url), [url])
+  const { update } = suspend(() => createAudio(url), [url])
   // Add our custom bits to the MeshStandardMaterial
   const onBeforeCompile = (shader) => {
     // Wire up local uniform references
     shader.uniforms = { ...shader.uniforms, ...uniforms }
 
     // Add to top of vertex shader
-    shader.vertexShader =
-      /* glsl */ `
+    shader.vertexShader = /* glsl */ `
       //	Simplex 4D Noise 
       //	by Ian McEwan, Ashima Arts
       //
@@ -178,13 +177,15 @@ const Bubbles = ({ colors, number, size, url, obj }) => {
       }
       uniform float time;
       uniform float avg;
-    ` + shader.vertexShader
+    ${shader.vertexShader}`
     // Assign values to varyings inside of main()
     shader.vertexShader = shader.vertexShader.replace(
       /#include <begin_vertex>/,
       (match) =>
-        match +
-        /* glsl */ `
+        `${
+          match
+          /* glsl */
+        }
         float t = time*.5;
         float pos = snoise(vec4(position+t, 1.));
         transformed = position+pos;
@@ -214,7 +215,7 @@ const Bubbles = ({ colors, number, size, url, obj }) => {
   }
 
   useFrame(({ clock }) => {
-    let avg = update() * 0.05
+    const avg = update() * 0.05
     // Distribute the instanced planes according to the frequency daza
     // for (let i = 0; i < number; i++) {
     //   obj.scale.set(avg, avg, avg)
@@ -233,7 +234,7 @@ const Bubbles = ({ colors, number, size, url, obj }) => {
       Math.random() * 5,
       Math.random() * 5
     )
-    //at(Math.floor(Math.random() * number)).scaleOverride([avg, avg, avg])
+    // at(Math.floor(Math.random() * number)).scaleOverride([avg, avg, avg])
   })
   return (
     <instancedMesh

@@ -117,13 +117,13 @@ const CurveMesh = ({ index, material, color, url }) => {
       step: 0.01,
     },
     uXOffset: {
-      value: 8,
+      value: 1,
       min: 0,
       max: 18,
       step: 0.1,
     },
     uYOffset: {
-      value: 8,
+      value: 1,
       min: 0,
       max: 18,
       step: 0.1,
@@ -131,14 +131,13 @@ const CurveMesh = ({ index, material, color, url }) => {
   })
 
   const t = totalMeshes <= 1 ? 0 : index / (totalMeshes - 1)
-  const { update } = suspend(() => createAudio(url), [url])
 
   useFrame((state, delta) => {
     if (material.uniforms) {
       material.uniforms.time.value += delta
       material.uniforms.animateRadius.value = animateRadius
-      meshRef.current.material.uniforms.uXOffset.value = update() * 0.25
-      meshRef.current.material.uniforms.uYOffset.value = update() * 0.25
+      // meshRef.current.material.uniforms.uXOffset.value = update() * 0.25
+      // meshRef.current.material.uniforms.uYOffset.value = update() * 0.25
     }
   })
 
