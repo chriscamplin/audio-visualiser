@@ -1,12 +1,11 @@
+import { useState } from 'react'
+import { a as a3, useSpring as useSpringThree } from '@react-spring/three'
+import { Box, Plane, Sphere, useTexture } from '@react-three/drei'
+import { useFrame, useThree } from '@react-three/fiber'
+import { suspend } from 'suspend-react'
 import * as THREE from 'three'
 
-import { Box, Plane, Sphere, useTexture } from '@react-three/drei'
-import { a as a3, useSpring as useSpringThree } from '@react-spring/three'
-import { useFrame, useThree } from '@react-three/fiber'
-
 import createAudio from '@/helpers/createAudio'
-import { suspend } from 'suspend-react'
-import { useState } from 'react'
 import useStore from '@/helpers/store'
 
 // HSL color values
@@ -30,13 +29,14 @@ function Marble({ step, setStep, url }) {
       tension: 300,
     },
   })
+
   return (
     <group>
       <a3.group
         scale={scale}
         onPointerEnter={() => setHover(true)}
         onPointerOut={() => setHover(false)}
-        //onClick={() => (setStep(step + 1), router.push('/'))}
+        // onClick={() => (setStep(step + 1), router.push('/'))}
       >
         <sphereGeometry scale={[1, 1, 1]}>
           <MagicMarbleMaterial step={step} roughness={0.1} url={url} />
@@ -59,12 +59,6 @@ function Marble({ step, setStep, url }) {
   )
 }
 
-/**
- * @typedef MagicMarbleMaterialProps
- * @property {number} step - Which step of the color sequence we're on
- *
- * @param {MagicMarbleMaterialProps & THREE.MeshStandardMaterialParameters}
- */
 function MagicMarbleMaterial({ url, step, ...props }) {
   const { update } = suspend(() => createAudio(url), [url])
 
@@ -100,7 +94,7 @@ function MagicMarbleMaterial({ url, step, ...props }) {
 
   // Update time uniform on each frame
   useFrame(({ clock }) => {
-    let avg = update()
+    const avg = update()
     uniforms.displacement.value = avg / 500
     uniforms.smoothing.value = avg / 200
     uniforms.depth.depth = avg / 300
@@ -113,26 +107,26 @@ function MagicMarbleMaterial({ url, step, ...props }) {
     shader.uniforms = { ...shader.uniforms, ...uniforms }
 
     // Add to top of vertex shader
-    shader.vertexShader =
-      /* glsl */ `
+    shader.vertexShader = /* glsl */ `
       varying vec3 v_pos;
       varying vec3 v_dir;
-    ` + shader.vertexShader
+    ${shader.vertexShader}`
 
     // Assign values to varyings inside of main()
     shader.vertexShader = shader.vertexShader.replace(
       /void main\(\) {/,
       (match) =>
-        match +
-        /* glsl */ `
+        `${
+          match
+          /* glsl */
+        }
         v_dir = position - cameraPosition; // Points from camera to vertex
         v_pos = position;
         `
     )
 
     // Add to top of fragment shader
-    shader.fragmentShader =
-      /* glsl */ `
+    shader.fragmentShader = /* glsl */ `
       #define FLIP vec2(1., -1.)
       
       uniform vec3 colorA;
@@ -147,13 +141,12 @@ function MagicMarbleMaterial({ url, step, ...props }) {
       
       varying vec3 v_pos;
       varying vec3 v_dir;
-    ` + shader.fragmentShader
+    ${shader.fragmentShader}`
 
     // Add above fragment shader main() so we can access common.glsl.js
     shader.fragmentShader = shader.fragmentShader.replace(
       /void main\(\) {/,
-      (match) =>
-        /* glsl */ `
+      (match) => /* glsl */ `
        	/**
          * @param p - Point to displace
          * @param strength - How much the map can displace the point
@@ -198,7 +191,7 @@ function MagicMarbleMaterial({ url, step, ...props }) {
           }
           return mix(colorA, colorB, totalVolume);
         }
-      ` + match
+      ${match}`
     )
 
     shader.fragmentShader = shader.fragmentShader.replace(

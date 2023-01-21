@@ -21,16 +21,22 @@
   },
   "dependencies": {
     "@babel/plugin-transform-runtime": "^7.17.0",
+    "@react-spring/three": "^9.6.1",
     "@react-spring/web": "^9.6.1",
     "@react-three/cannon": "^6.5.0",
     "@react-three/drei": "^9.47.1",
+<<<<<<< HEAD
     "@react-three/fiber": "^8.9.1",
     "@react-three/postprocessing": "^2.7.0",
+=======
+    "@react-three/fiber": "^8.10.0",
+>>>>>>> 885cc31a4fe51eeaa9e65baa8d1553d1b0121eaa
     "babel-plugin-glsl": "^1.0.0",
     "glsl-easings": "^1.0.0",
     "glsl-face-normal": "^1.0.2",
     "glsl-pi": "^1.0.0",
     "glsl-random": "^0.0.5",
+    "glsl-specular-blinn-phong": "^1.0.2",
     "leva": "^0.9.34",
     "next": "^12.1.6",
     "next-compose-plugins": "^2.2.1",

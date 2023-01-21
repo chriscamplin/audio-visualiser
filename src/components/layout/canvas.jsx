@@ -45,14 +45,14 @@ const LCanvas = ({ children }) => {
           // console.log(gl)
           events.connect(dom.current)
         }}
-        // shadows
         gl={{
           // alpha: false,
           sortObjects: false,
           preserveDrawingBuffer: true,
         }}
         dpr={1}
-        camera={{ position: [0, 0, 10], fov: 65 }}
+        // dpr={1}
+        camera={{ position: [-1, 1.5, 2], fov: 65 }}
       >
         {/* 💡 not having a clear color would glitch the recording */}
         <color attach='background' args={['#000']} />

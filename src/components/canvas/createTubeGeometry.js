@@ -34,23 +34,18 @@ export default function createTubeGeometry(
   // This gets # of vertices
   const vertexCount = baseGeometry.getAttribute('position').count
   // dispose old geometry since we no longer need it
-  //baseGeometry.dispose()
+  // baseGeometry.dispose()
 
   // We'll store each vertex in this Vec3
   // const indices = baseGeometry.getIndex().array
   // const index = baseGeometry.getIndex()
-  console.log(vertexCount)
   const tmpVec31 = new THREE.Vector3()
   const tmpVec32 = new THREE.Vector3()
   const tmpVec33 = new THREE.Vector3()
-  const tmpVec22 = new THREE.Vector3()
   const posArray = new Float32Array(vertexCount)
   const angleArray = new Float32Array(vertexCount)
-  const uvs = []
 
   const uvArray = new Float32Array(vertexCount * 2)
-  let idx = 0
-  let uvIdx = 0
 
   for (let i = 0; i < vertexCount; i += 3) {
     const a = positions[i + 0]
@@ -71,7 +66,10 @@ export default function createTubeGeometry(
 
     const face = [v0, v1, v2]
     // For each vertex in this face...
-    face.forEach((v, j) => {
+    face.forEach((v) => {
+      let idx = 0
+      let uvIdx = 0
+
       // singleVertex.set(v.x, v.y, v.z)
 
       tmpVec.set(v.y, v.z).normalize()
@@ -86,7 +84,7 @@ export default function createTubeGeometry(
 
       // copy over the UV for this vertex
       uvArray.set([faceUvsU, faceUvsV], uvIdx)
-      idx++
+      idx += 1
       uvIdx += 2
     })
   }

@@ -186,6 +186,8 @@ function PolarPlane(props) {
     <>
       <mesh
         {...props}
+        position={[0, -4.5, 0]}
+        scale={[4, 4, 2]}
         rotation-x={Math.PI * -0.5}
         onPointerMove={(e) => {
           if (trackPointer) {
