@@ -10,6 +10,7 @@ const RecordCanvas = ({ canvRef }) => {
   }
   useEffect(() => {
     let mediaRecorder
+    console.log('Recording', recording)
 
     if (recording) {
       const stream = canvRef.current.captureStream(FPS)
@@ -17,6 +18,7 @@ const RecordCanvas = ({ canvRef }) => {
         mimeType: 'video/webm;avc1,opus',
         videoBitsPerSecond: 8000000,
       })
+
       mediaRecorder.ondataavailable = (e) => {
         console.log({ d: e.data })
 
@@ -47,7 +49,13 @@ const RecordCanvas = ({ canvRef }) => {
   return (
     <button
       onClick={handleClick}
-      style={{ position: 'fixed', left: 0, bottom: 0, zIndex: 10 }}
+      style={{
+        position: 'fixed',
+        left: 0,
+        bottom: 0,
+        zIndex: 10,
+        color: 'white',
+      }}
     >
       {!recording ? 'Start Recording' : 'Stop Recording'}
     </button>

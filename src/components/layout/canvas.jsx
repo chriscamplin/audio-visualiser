@@ -42,13 +42,13 @@ const LCanvas = ({ children }) => {
           console.log(gl)
           events.connect(dom.current)
         }}
-        // shadows
+        shadows
         gl={{
           alpha: false,
           sortObjects: false,
           preserveDrawingBuffer: true,
         }}
-        dpr={1}
+        // dpr={1}
         camera={{ position: [-1, 1.5, 2], fov: 65 }}
       >
         <Stats />

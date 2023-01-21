@@ -1,12 +1,12 @@
+import { useRef, useState } from 'react'
+import { shaderMaterial } from '@react-three/drei'
+import { extend, useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
-import { extend, useFrame } from '@react-three/fiber'
-import { useRef, useState } from 'react'
-
 import fragment from './glsl/shader.frag'
-import { shaderMaterial } from '@react-three/drei'
-import useStore from '@/helpers/store'
 import vertex from './glsl/shader.vert'
+
+import useStore from '@/helpers/store'
 
 const ColorShiftMaterial = shaderMaterial(
   {
@@ -19,7 +19,6 @@ const ColorShiftMaterial = shaderMaterial(
 
 // This is the 🔑 that HMR will renew if this file is edited
 // It works for THREE.ShaderMaterial as well as for drei/shaderMaterial
-// @ts-ignore
 ColorShiftMaterial.key = THREE.MathUtils.generateUUID()
 
 extend({ ColorShiftMaterial })
@@ -27,13 +26,13 @@ extend({ ColorShiftMaterial })
 const Shader = (props) => {
   const meshRef = useRef(null)
   const [hovered, setHover] = useState(false)
-  const router = useStore((state) => state.router)
+  // const router = useStore((state) => state.router)
   const viewAudioViz = useStore((state) => state.viewAudioViz)
 
   useFrame((state, delta) => {
     if (viewAudioViz) return
     if (meshRef.current) {
-      meshRef.current.rotation.x = meshRef.current.rotation.y += 0.01
+      meshRef.current.rotation.x += 0.01
     }
     if (meshRef.current.material) {
       meshRef.current.material.uniforms.time.value +=
@@ -51,8 +50,8 @@ const Shader = (props) => {
           viewAudioViz: true,
         })
       }}
-      onPointerOver={(e) => setHover(true)}
-      onPointerOut={(e) => setHover(false)}
+      onPointerOver={() => setHover(true)}
+      onPointerOut={() => setHover(false)}
       {...props}
     >
       <boxGeometry args={[1, 1, 1]} />
