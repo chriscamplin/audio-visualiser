@@ -1,45 +1,56 @@
 import { Suspense } from 'react'
-// import { Environment } from '@react-three/drei'
+import { useVideoTexture } from '@react-three/drei'
 import dynamic from 'next/dynamic'
 
-// import * as THREE from 'three'
 import ProceduralBackground from '@/components/canvas/ProceduralBackground'
 
 // import { Track, Zoom } from '@/components/canvas/track'
 // import ShapingCurves from '@/components/canvas/ShapingCurves'
 import useStore from '@/helpers/store/'
 
-const ShapingCurves = dynamic(
-  () => import('@/components/canvas/ShapingCurves'),
-  {
-    ssr: false,
-  }
-)
+// const ShapingCurves = dynamic(
+//   () => import('@/components/canvas/ShapingCurves'),
+//   {
+//     ssr: false,
+//   }
+// )
+const Video = dynamic(() => import('@/components/canvas/Video'), {
+  ssr: false,
+})
+
+// const PolarPlane = dynamic(() => import('@/components/canvas/Polar'), {
+//   ssr: false,
+// })
+// const Floor = dynamic(() => import('@/components/canvas/Floor'), {
+//   ssr: false,
+// })
+
 // const BubbleEmitter = dynamic(
 //   () => import('@/components/canvas/BubbleEmitter'),
 //   {
 //     ssr: false,
 //   }
 // )
-const MarbleWrapper = dynamic(
-  () => import('@/components/canvas/MarbleWrapper'),
-  {
-    ssr: false,
-  }
-)
+// const MarbleWrapper = dynamic(
+//   () => import('@/components/canvas/MarbleWrapper'),
+//   {
+//     ssr: false,
+//   }
+// )
 
 // const Dots = dynamic(() => import('@/components/canvas/Dots'), {
 //   ssr: false,
 // })
-// const Audio = dynamic(() => import('@/components/canvas/Audio'), {
-//   ssr: false,
-// })
+const Audio = dynamic(() => import('@/components/canvas/Audio'), {
+  ssr: false,
+})
 
 // const step = 10
 
 const AudioViz = () => {
   const viewAudioViz = useStore((state) => state.viewAudioViz)
-  const url = '/audio/traxManSafeNoMo.mp3'
+  const url = '/audio/bastientGoatWorkin.mp3'
+  const texture = useVideoTexture('/video/dj.mp4')
 
   return viewAudioViz ? (
     <>
@@ -52,11 +63,7 @@ const AudioViz = () => {
         castShadow
         shadow-mapSize={[512, 512]}
       />
-      <directionalLight
-        intensity={5}
-        position={[-10, -10, -10]}
-        color='purple'
-      />
+      <directionalLight intensity={5} position={[-10, -10, -10]} color='red' />
       {/* <Environment
         background={false} // can be true, false or "only" (which only sets the background) (default: false)
         path='/'
@@ -73,11 +80,14 @@ const AudioViz = () => {
         <Track position-z={0.25} url="/drum.mp3" />
         <Zoom url="/drum.mp3" /> */}
         {/* <Dots /> */}
-        <ShapingCurves />
+        {/* <Floor /> */}
+        {/* <ShapingCurves /> */}
+        <Video url={url} />
         {/* <BubbleEmitter url={'/audio/drum.mp3'} /> */}
-        <ProceduralBackground url={url} />
-        {/* <Audio url={url} /> */}
-        <MarbleWrapper />
+        <ProceduralBackground url={url} texture={texture} />
+        <Audio url={url} />
+        {/* <PolarPlane /> */}
+        {/* <MarbleWrapper /> */}
       </Suspense>
     </>
   ) : null

@@ -1,6 +1,7 @@
-import createAudio from '@/helpers/createAudio'
-import { suspend } from 'suspend-react'
 import { useEffect } from 'react'
+import { suspend } from 'suspend-react'
+
+import createAudio from '@/helpers/createAudio'
 import useStore from '@/helpers/store/'
 
 export default function Audio({ url }) {
