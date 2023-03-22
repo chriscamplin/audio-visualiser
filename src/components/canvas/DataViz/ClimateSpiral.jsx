@@ -1,7 +1,6 @@
 import { Suspense, useEffect, useState } from 'react'
 import { a, useSpring } from '@react-spring/three'
 import { shaderMaterial, Text } from '@react-three/drei'
-import { useFrame } from '@react-three/fiber'
 import { Leva, useControls } from 'leva'
 import * as THREE from 'three'
 
@@ -15,7 +14,6 @@ import fragment from '../Shader/glsl/heat.frag'
 import vertex from '../Shader/glsl/heat.vert'
 
 import createCurvesFromData from '@/helpers/createCurvesFromData'
-// @TODO: update to use data from CSV]
 // const { geometry } = createCurvesFromData(data)
 
 // drawcalls
@@ -54,21 +52,6 @@ export default function ClimateSpiral() {
   // const matCap = useTexture('/matCaps/GrayGlossy.png')
   const [step1Complete, setStep1Complete] = useState(false)
   // const matRef = useRef()
-  useFrame((props) => {
-    // console.log({ delta, props })
-    // const t = props.clock.elapsedTime
-    // // if (t > 50 && !step1Complete) {
-    // //   setStep1Complete(true)
-    // //   material.uniforms.fraction.value = 0
-    // //   fractionValue = 0
-    // // }
-    // const fractionValue = 0.5 * (1.666 + Math.cos(t * 0.0525))
-    // console.log({ fractionValue })
-    // if (material && fractionValue * 1000 > 450 && !step1Complete) {
-    //   material.uniforms.fraction.value = fractionValue
-    // }
-    // console.log(material)
-  })
   const [springs, api] = useSpring(() => ({
     rotation: [0, 0, 0],
     position: [0, 0, 0],
@@ -86,11 +69,11 @@ export default function ClimateSpiral() {
       position: [0, step1Complete ? 10 : 0, 0],
     })
   }, [step1Complete, api])
-  const [hovered, setHovered] = useState(false)
+  // const [hovered, setHovered] = useState(false)
 
-  useEffect(() => {
-    document.body.style.cursor = hovered ? 'pointer' : 'auto'
-  }, [hovered])
+  // useEffect(() => {
+  //   document.body.style.cursor = hovered ? 'pointer' : 'auto'
+  // }, [hovered])
 
   return (
     // {!isStarted && <Text>Start</Text>}
@@ -99,20 +82,6 @@ export default function ClimateSpiral() {
         collapsed // default = false, when true the GUI is collpased
         hidden // default = false, when true the GUI is hidden
       />
-      {/* <ambientLight intensity={0.25} />
-      <spotLight
-        intensity={1}
-        angle={0.2}
-        penumbra={1}
-        position={[30, 30, 30]}
-        castShadow
-        shadow-mapSize={[512, 512]}
-      />
-      <directionalLight
-        intensity={5}
-        position={[-10, -10, -10]}
-        color='white'
-      /> */}
       <a.group
         rotation={springs.rotation.to((x, y, z) => [x, y, z])}
         position={springs.position.to((x, y, z) => [x, y, z])}

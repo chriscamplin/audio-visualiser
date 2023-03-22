@@ -1,11 +1,5 @@
-import { max, min } from 'd3-array'
 import { scaleRadial } from 'd3-scale'
 import * as THREE from 'three'
-
-const DATA_SOURCE = {
-  a: 'GCAG',
-  b: 'GISTEMP',
-}
 
 function mapToRange(value, inMin, inMax, outMin, outMax) {
   return ((value - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin
@@ -45,7 +39,6 @@ export default function createCurvesFromData(data) {
     []
   )
 
-  const dataFilter = ({ Source }) => Source === DATA_SOURCE['b']
   const filteredData = groupByYear
     .reverse()
     .flat()
@@ -64,7 +57,7 @@ export default function createCurvesFromData(data) {
   const step = radians / 12
 
   const circles = []
-  for (let i = 0; i < filteredData.length; i++) {
+  for (let i = 0; i < filteredData.length; i += 1) {
     const { Date } = filteredData[i]
     const { Mean } = filteredData[i]
 
@@ -72,31 +65,6 @@ export default function createCurvesFromData(data) {
   }
   // console.log({ circles })
 
-  const dataCurves = circles.map((item) => {
-    // filterData that machetches the year in Date
-    const year = filteredData.filter(
-      ({ Date }) => Date.split('-')[0] === item.Date.split('-')[0]
-    )
-    const line = []
-    // push line data from each year to circles array
-    // console.log(year);
-    year.forEach(({ Mean }, i) => {
-      // const colorScale = scale(Mean, min.Mean, max.Mean, 0, 1);
-
-      const xAngle = Math.sin((i + 1) * step)
-      const yAngle = Math.cos((i + 1) * step)
-
-      const x = xyScale(Mean) * xAngle
-      const y = xyScale(Mean) * yAngle
-      const z = i * 0.00945
-
-      line.push(new THREE.Vector3(x, y, z))
-    })
-    return {
-      item,
-      line,
-    }
-  })
   // console.log({ dataCurves })
 
   const points = filteredData.map(({ Mean }, i) => {
@@ -162,7 +130,7 @@ export default function createCurvesFromData(data) {
   geometry.setAttribute('distance', new THREE.BufferAttribute(distance, 1))
 
   // populate attribute
-  for (let i = 0, l = numVertices; i < l; i++) {
+  for (let i = 0, l = numVertices; i < l; i += 1) {
     // set new attribute
     distance[i] = (geometry.attributes.position.getZ(i) + 10) / 20.5
 
