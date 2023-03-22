@@ -18,6 +18,13 @@ const Video = dynamic(() => import('@/components/canvas/Video'), {
   ssr: false,
 })
 
+const CubeAnimation = dynamic(
+  () => import('@/components/canvas/CubeAnimation'),
+  {
+    ssr: false,
+  }
+)
+
 // const PolarPlane = dynamic(() => import('@/components/canvas/Polar'), {
 //   ssr: false,
 // })
@@ -82,10 +89,11 @@ const AudioViz = () => {
         {/* <Dots /> */}
         {/* <Floor /> */}
         {/* <ShapingCurves /> */}
-        <Video url={url} />
+        {/* <Video url={url} /> */}
         {/* <BubbleEmitter url={'/audio/drum.mp3'} /> */}
         <ProceduralBackground url={url} texture={texture} />
         <Audio url={url} />
+        <CubeAnimation />
         {/* <PolarPlane /> */}
         {/* <MarbleWrapper /> */}
       </Suspense>

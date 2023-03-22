@@ -1,9 +1,8 @@
 import { StrictMode, useEffect, useRef } from 'react'
-import { OrbitControls, PerformanceMonitor, Stats } from '@react-three/drei'
+import { OrbitControls, Preload, Stats } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 
-import RecordCanvas from '@/components/dom/RecordCanvas'
-
+// import RecordCanvas from '@/components/dom/RecordCanvas'
 import useStore from '@/helpers/store'
 
 const LControl = () => {
@@ -24,15 +23,16 @@ const LControl = () => {
   return <OrbitControls ref={control} domElement={dom.current} />
 }
 
-const LCanvas = ({ children }) => {
+const LCanvas = ({ children, orthographic = false }) => {
   const canvasRef = useRef()
   console.log(canvasRef)
   const dom = useStore((state) => state.dom)
 
   return (
     <StrictMode>
-      <RecordCanvas canvRef={canvasRef} />
+      {/* <RecordCanvas canvRef={canvasRef} /> */}
       <Canvas
+        orthographic={orthographic}
         ref={canvasRef}
         style={{
           position: 'absolute',
@@ -42,19 +42,17 @@ const LCanvas = ({ children }) => {
           console.log(gl)
           events.connect(dom.current)
         }}
-        shadows
+        // shadows
         gl={{
-          alpha: false,
-          sortObjects: false,
-          preserveDrawingBuffer: true,
+          antialias: false,
         }}
         // dpr={1}
-        camera={{ position: [-1, 1.5, 2], fov: 65 }}
+        camera={{ position: [0, 0, 25], zoom: orthographic ? 32 : 1 }}
       >
-        <Stats />
+        {/* <Stats /> */}
         <LControl />
-        {/* <Preload all /> */}
-        <PerformanceMonitor>{children}</PerformanceMonitor>
+        <Preload all />
+        {children}
       </Canvas>
     </StrictMode>
   )

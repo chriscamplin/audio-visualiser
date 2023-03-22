@@ -1,15 +1,13 @@
+import React, { useMemo, useRef } from 'react'
+import { useSphere } from '@react-three/cannon'
+import { useFrame } from '@react-three/fiber'
+import { suspend } from 'suspend-react'
 import * as THREE from 'three'
 
-import React, { useMemo, useRef } from 'react'
-
 import createAudio from '@/helpers/createAudio'
-import { suspend } from 'suspend-react'
-import { useFrame } from '@react-three/fiber'
-import { useSphere } from '@react-three/cannon'
 
-const roundedSquareWave = (t, delta, a, f) => {
-  return ((2 * a) / Math.PI) * Math.atan(Math.sin(2 * Math.PI * t * f) / delta)
-}
+const roundedSquareWave = (t, delta, a, f) =>
+  ((2 * a) / Math.PI) * Math.atan(Math.sin(2 * Math.PI * t * f) / delta)
 
 function Dots({ url, numDots = 20000, size = 0.2 }) {
   const [ref, { at }] = useSphere(
@@ -25,7 +23,7 @@ function Dots({ url, numDots = 20000, size = 0.2 }) {
     useRef()
   )
 
-  //const ref = useRef()
+  // const ref = useRef()
   const { update } = suspend(() => createAudio(url), [url])
 
   const { vec, transform, positions, distances } = useMemo(() => {
@@ -52,9 +50,10 @@ function Dots({ url, numDots = 20000, size = 0.2 }) {
 
     // Precompute initial distances with octagonal offset
     const right = new THREE.Vector3(1, 0, 0)
-    const distances = positions.map((pos) => {
-      return pos.length() + Math.cos(pos.angleTo(right) * 8) * 0.5
-    })
+    const distances = positions.map(
+      (pos) => pos.length() + Math.cos(pos.angleTo(right) * 8) * 0.5
+    )
+
     return { vec, transform, positions, distances }
   }, [])
   // useFrame(({ clock }) => {

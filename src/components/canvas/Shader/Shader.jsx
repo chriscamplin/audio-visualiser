@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react'
-import { shaderMaterial } from '@react-three/drei'
+import { useEffect, useRef, useState } from 'react'
+import { shaderMaterial, useTexture } from '@react-three/drei'
 import { extend, useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
@@ -28,17 +28,27 @@ const Shader = (props) => {
   const [hovered, setHover] = useState(false)
   // const router = useStore((state) => state.router)
   const viewAudioViz = useStore((state) => state.viewAudioViz)
+  const normalMap = useTexture('/txt/normalMap.jpg')
+  const matCap = useTexture('/matCaps/Bronze.png')
 
   useFrame((state, delta) => {
     if (viewAudioViz) return
     if (meshRef.current) {
       meshRef.current.rotation.x += 0.01
     }
-    if (meshRef.current.material) {
-      meshRef.current.material.uniforms.time.value +=
-        Math.sin(delta / 2) * Math.cos(delta / 2)
-    }
+    // if (meshRef.current.material) {
+    //   meshRef.current.material.uniforms.time.value +=
+    //     Math.sin(delta / 2) * Math.cos(delta / 2)
+    // }
   })
+
+  useEffect(() => {
+    if (hovered) {
+      document.body.style.cursor = 'pointer'
+    } else {
+      document.body.style.cursor = 'auto'
+    }
+  }, [hovered])
 
   return !viewAudioViz ? (
     <mesh
@@ -55,7 +65,8 @@ const Shader = (props) => {
       {...props}
     >
       <boxGeometry args={[1, 1, 1]} />
-      <colorShiftMaterial key={ColorShiftMaterial.key} time={3} />
+      <meshMatcapMaterial normalMap={normalMap} matcap={matCap} />
+      {/* <colorShiftMaterial key={ColorShiftMaterial.key} time={3} /> */}
     </mesh>
   ) : null
 }

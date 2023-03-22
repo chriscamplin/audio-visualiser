@@ -18,4 +18,9 @@
     background: black;
     font-family: monospace;
   }
+
+  body>div:last-child {
+  right: 0;
+  left: auto!important;
+  }
 }
