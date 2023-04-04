@@ -1,9 +1,6 @@
 // Step 5 - delete Instructions components
 import dynamic from 'next/dynamic'
 
-import LayoutControls from '@/components/dom/LayoutControls'
-import Play from '@/components/dom/Play'
-
 // Dynamic import is used to prevent a payload when the website start that will include threejs r3f etc..
 // WARNING ! errors might get obfuscated by using dynamic import.
 // If something goes wrong go back to a static import to show the error.
@@ -11,49 +8,31 @@ import Play from '@/components/dom/Play'
 // const Shader = dynamic(() => import('@/components/canvas/Shader/Shader'), {
 //   ssr: false,
 // })
-const CubeAnimation = dynamic(
-  () => import('@/components/canvas/CubeAnimation'),
-  {
-    ssr: false,
-  }
-)
 
-const AudioViz = dynamic(() => import('@/components/canvas/AudioViz'), {
-  ssr: false,
-})
-const ProceduralBackground = dynamic(
-  () => import('@/components/canvas/ProceduralBackground'),
+const ClimateSpiral = dynamic(
+  () => import('@/components/canvas/DataViz/ClimateSpiral'),
   {
     ssr: false,
   }
 )
-const Points = dynamic(() => import('@/components/canvas/Points'), {
-  ssr: false,
-})
 
 // dom components goes here
 const Page = () => (
   <>
-    {/* <div
-      style={{
-        color: 'white',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
-      AUDIO VISUALISER
-      <Play />
-    </div> */}
-    <LayoutControls />
+    <div style={{ color: 'white' }}>
+      GISTEMP Climate Spiral - -
+      <a target='_blank' href='https://svs.gsfc.nasa.gov/5057' rel='noreferrer'>
+        Data source
+      </a>
+    </div>
   </>
 )
 
 // canvas components goes here
 // It will receive same props as Page component (from getStaticProps, etc.)
-Page.r3f = (props) => (
+Page.r3f = () => (
   <>
-    <Points />
+    <ClimateSpiral />
   </>
 )
 
@@ -63,6 +42,7 @@ export async function getStaticProps() {
   return {
     props: {
       title: 'Index',
+      camera: 'orthographic',
     },
   }
 }

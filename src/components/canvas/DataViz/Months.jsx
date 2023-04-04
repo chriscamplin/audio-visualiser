@@ -14,7 +14,7 @@ const Months = ({ months, textScale }) =>
           font={'/fonts/GT-Zirkon-Bold.woff'}
           color='white'
           rotation={[0, 0, Math.PI * 0.125]}
-          scale={[textScale, textScale, textScale]}
+          scale={[textScale * 1.5, textScale * 1.5, textScale * 1.5]}
           position={[x, y, 0]}
         >
           {month}

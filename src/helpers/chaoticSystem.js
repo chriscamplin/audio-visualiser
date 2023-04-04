@@ -5,8 +5,7 @@ export default function chaoticSystem(
   b = 0.833,
   c = 20.0,
   d = 0.5,
-  e = 0.65,
-  f = 0.65
+  e = 0.65
 ) {
   const arrayCurve = []
 

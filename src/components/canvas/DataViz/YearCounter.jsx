@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Text } from '@react-three/drei'
 import { interpolateRdBu } from 'd3-scale-chromatic'
 
@@ -7,8 +8,11 @@ import { mapValue } from '@/helpers/mapValue'
 
 const YearCounter = ({ rows, textScale }) => {
   const { counter } = useYearCounter()
-  const av = rows[counter]?.average
-
+  const av = rows[counter]?.average ?? 1
+  console.log({ counter })
+  useEffect(() => {
+    console.log('yearCounter', { counter })
+  }, [counter])
   return (
     <Text
       font={'/fonts/GT-Zirkon-Bold.woff'}

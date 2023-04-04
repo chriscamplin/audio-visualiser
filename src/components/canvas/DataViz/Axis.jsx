@@ -12,22 +12,22 @@ const OpaqueBackground = ({ xPos = 0, yPos = 0 }) => (
   </mesh>
 )
 
-const circular = (denominator, sliceOfPi, textScale) =>
-  [...Array(3)].map((_, i) => {
+const circular = (denominator, sliceOfPi, textScale, degrees, anchorY) =>
+  [...degrees].map((_, i) => {
     const labelYPos = i * 2.95 + 3.75
 
     return (
       <React.Fragment key={Math.random()}>
         <OpaqueBackground yPos={labelYPos} />
         <Text
-          position={[0, labelYPos, 0]}
+          position={[0, labelYPos, 0.01]}
           scale={[textScale, textScale, textScale]}
           color='white'
           anchorX='center'
-          anchorY='middle'
+          anchorY={anchorY}
           font={'/fonts/GT-Zirkon-Bold.woff'}
         >
-          {`${i - 1}°F`}
+          {`${degrees[i]}°C`}
         </Text>
         <mesh
           rotation={[0, 0, i === 4 ? Math.PI * 0.05 : 0]}
@@ -55,7 +55,8 @@ const lineMaterial = new THREE.MeshBasicMaterial({
 })
 
 const lineGeometry = new THREE.PlaneGeometry(0.1, 22)
-const degrees = [1, 0, 0, 1]
+const lineDegrees = [1, 0, 0, 1]
+
 const years = [2023, 2000, 1980, 1960, 1940, 1920, 1900, 1880]
 const lines = (textScale) => (
   <group rotation={[Math.PI * 0.5, 0, 0]} position={[-11.5, -12, -12.5]}>
@@ -80,7 +81,7 @@ const lines = (textScale) => (
         </React.Fragment>
       )
     })}
-    {[...Array(4)].map((_, i) => {
+    {[...Array(3)].map((_, i) => {
       const labelXPos = i * 5.65 + 3.1
 
       return (
@@ -93,7 +94,7 @@ const lines = (textScale) => (
             anchorY='middle'
             font={'/fonts/GT-Zirkon-Bold.woff'}
           >
-            {`${degrees[i]}°F`}
+            {`${lineDegrees[i]}°C`}
           </Text>
 
           <mesh
@@ -107,23 +108,30 @@ const lines = (textScale) => (
   </group>
 )
 
-export default function Axis({ step1Complete, textScale }) {
+export default function Axis({
+  step1Complete,
+  textScale,
+  gap = 0.05,
+  closed = 0.013,
+  degrees = [1, 0, 1],
+  anchorY = 'middle',
+}) {
   const { denominator, sliceOfPi } = useControls({
     sliceOfPi: {
-      value: 0.05,
+      value: gap,
       min: 0.001,
       max: 0.5,
       step: 0.001,
     },
     denominator: {
-      value: 0.013,
+      value: closed,
       min: 0.01,
-      max: 0.02,
+      max: 1,
       step: 0.001,
     },
   })
 
   return !step1Complete
-    ? circular(denominator, sliceOfPi, textScale)
+    ? circular(denominator, sliceOfPi, textScale, degrees, anchorY)
     : lines(textScale)
 }

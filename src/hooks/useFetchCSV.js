@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { max } from 'd3-array'
+// import { max } from 'd3-array'
 import { parse } from 'papaparse'
 
 const useFetchCSV = (path) => {

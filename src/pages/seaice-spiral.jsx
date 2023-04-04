@@ -25,7 +25,7 @@ const Page = () => (
 
 // canvas components goes here
 // It will receive same props as Page component (from getStaticProps, etc.)
-Page.r3f = (props) => (
+Page.r3f = () => (
   <>
     <SeaIceSpiral />
   </>

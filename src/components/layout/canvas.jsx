@@ -42,14 +42,14 @@ const LCanvas = ({ children, orthographic = false }) => {
           console.log(gl)
           events.connect(dom.current)
         }}
-        // shadows
+        shadows
         gl={{
           antialias: false,
         }}
         // dpr={1}
-        camera={{ position: [0, 0, 25], zoom: orthographic ? 32 : 1 }}
+        camera={{ position: [0, 0, 10], zoom: orthographic ? 32 : 1 }}
       >
-        {/* <Stats /> */}
+        <Stats />
         <LControl />
         <Preload all />
         {children}

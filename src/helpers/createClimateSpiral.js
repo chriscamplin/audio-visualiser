@@ -5,8 +5,8 @@ function mapToRange(value, inMin, inMax, outMin, outMax) {
   return ((value - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin
 }
 
-export default function createCurvesFromData(data) {
-  if (data.length === 0) return { geometry: null }
+export default function createClimateSpiral(data) {
+  if (!data || data.length === 0) return { geometry: null }
   const months = [
     'Jan',
     'Feb',
@@ -23,7 +23,7 @@ export default function createCurvesFromData(data) {
   ]
   const handleSingleNDoubleDigitMonths = (adjustedIdx) =>
     `${adjustedIdx}`.length === 1 ? `0${adjustedIdx}` : adjustedIdx
-
+  console.log(data)
   const groupByYear = data.reduce(
     (prev, curr) => [
       ...prev,

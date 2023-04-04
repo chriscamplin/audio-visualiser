@@ -13,7 +13,7 @@ import useFetchCSV from '@/hooks/useFetchCSV'
 import fragment from '../Shader/glsl/heat.frag'
 import vertex from '../Shader/glsl/heat.vert'
 
-import createCurvesFromData from '@/helpers/createCurvesFromData'
+import createClimateSpiral from '@/helpers/createClimateSpiral'
 // const { geometry } = createCurvesFromData(data)
 
 // drawcalls
@@ -46,7 +46,7 @@ export default function ClimateSpiral() {
   })
   console.log({ rows })
   // console.log({ rows, data })
-  const { geometry, months } = createCurvesFromData(rows)
+  const { geometry, months } = createClimateSpiral(rows)
   // console.log({ geometry })
   // const normalMap = useTexture('/txt/normalMap.jpg')
   // const matCap = useTexture('/matCaps/GrayGlossy.png')
@@ -55,7 +55,7 @@ export default function ClimateSpiral() {
   const [springs, api] = useSpring(() => ({
     rotation: [0, 0, 0],
     position: [0, 0, 0],
-    config: { mass: 5, tension: 120, friction: 120, precision: 0.0001 },
+    config: { mass: 10, tension: 120, friction: 240, precision: 0.0001 },
   }))
   useEffect(() => {
     //   meshRef.current.rotation.z += rotation
@@ -64,7 +64,7 @@ export default function ClimateSpiral() {
       rotation: [
         step1Complete ? -Math.PI * 0.5 - Math.PI * 0.00675 : 0,
         0,
-        step1Complete ? -Math.PI * 2 : 0,
+        step1Complete ? -Math.PI * 4 : 0,
       ],
       position: [0, step1Complete ? 10 : 0, 0],
     })

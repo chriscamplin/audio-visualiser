@@ -1,3 +1,4 @@
+/* eslint-disable no-promise-executor-return */
 export default async function createAudio(url) {
   // Fetch audio data and create a buffer source
   const res = await fetch(url)
@@ -19,6 +20,7 @@ export default async function createAudio(url) {
   analyser.connect(gain)
   // The data array receive the audio frequencies
   const data = new Uint8Array(analyser.frequencyBinCount)
+
   return {
     context,
     source,

@@ -7,7 +7,7 @@ import * as THREE from 'three'
 // import useStore from '@/helpers/store'
 
 export function CustomTextMaterial({ geo, config }) {
-  const normalMap = useTexture('/txt/normalMap.jpg')
+  // const normalMap = useTexture('/txt/normalMap.jpg')
   const matCap = useTexture('/matCaps/1A2461_3D70DB_2C3C8F_2C6CAC-512px.png')
   const [uniforms] = useState(() => ({
     // map: { value: '' },
